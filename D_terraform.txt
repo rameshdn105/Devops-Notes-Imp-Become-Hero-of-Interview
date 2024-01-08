@@ -1,0 +1,584 @@
+                  
+																			TERRAFORM  (terraform -version)
+																			=========
+1. What is terraform
+-> Terraform is an open-source infrastructure as code software tool that enables you to safely and predictably 
+    create, change, and improve cloud infrastructureand resources in a declarative way.
+-> resources: Create virtual m/c, Virtual network, Storages resource, providers using the advantage at once. We can reuse file to recreate things again and again.
+-> Ansible is used to management of resources, but we are creating, provisioning cloud resources using terraform.
+-> Used to automate various infrastructure tasks.
+ 
+** Provisioning: Configuration activities that happen after the resource is created. It may involve some file
+   operations, executing CLI commands, or even executing the script. Once the resource is successfully initialized, it is ready to accept connections.
+
+Q. Disadvantages of terraform:
+1. No automatic rollback, at a group it will create and it will delete at a group
+2. Everyone can access the files in terraform module.
+1. Expensive enterprise plan.
+2. Security of “state files” is a concern because managing the resources is impossible if the terraform state is ever lost.
+3. It’s complicated while using local files.
+4. It does not support any revert function for wrong/invalid changes to resources.(no automatic roll back)
+5. Terraform is difficult to debug.
+6. Difficult to operate the existing stacks. 
+7. It does not contain GUI.
+
+Q. Challenges in terraform
+-> Security
+-> Automatic roll back 
+-> Shared access to state file and its encryption. 
+-> Terraform versions. 
+-> Code and Terraform Plan Review within team
+-> Terraform Pull Request Automation
+
+Q. What are the features of Terraform enterprise?
+-> Below are some very useful features of Terraform cloud to provide better collaboration, management and scalability:
+● Remote execution: Ability to run Terraform configurations and apply changes from a remote machine or environment. 
+● Terraform cloud workspaces: Formerly known as Terraform Enterprise (TFE) Workspaces, is a feature of Terraform Cloud, which is HashiCorp's managed service for running Terraform in the cloud. Terraform Cloud Workspaces provide a way to organize, manage, and collaborate on Terraform configurations in a shared environment.
+● Remote state management: practice of storing the Terraform state file in a remote location rather than locally on your development machine. The state file is a critical component in Terraform as it contains the mapping between the infrastructure defined in your configuration files and the real resources provisioned in the cloud or on-premises. 
+● Version control integration and triggers.
+● CLI integration. 
+● Private registry.
+● Access Control & Governance.
+● Sentinel policies & Cost estimation: essential features in Terraform that help enforce governance and control costs in your infrastructure-as-code (IaC) workflows.
+
+Q. Workspace: The place where we execute terraform command.
+-> Workspaces in the Terraform CLI refer to separate instances of state data inside the same Terraform working directory.
+-> Terraform starts with a single, default workspace named default that you cannot delete.
+
+Q. Stages of terraform cycle in terraform/ Terraform workflow:
+1. Init/Write - Author infrastructure as code
+-> Used to initialize a Terraform configuration in a directory. When you start working on a new Terraform project or if you update the providers or backend configurations in your existing project, you need to run terraform init to set up the necessary plugins and backend settings.
+-> During initialization, Terraform downloads the required providers (plugins that interact with cloud providers like AWS, Azure, Google Cloud, etc.) and sets up the backend configuration for state storage. The backend is where Terraform stores the state file, which is crucial for keeping track of the actual state of your infrastructure.
+
+2. Plan - Preview changes before applying.
+-> used to create an execution plan for your infrastructure changes. When you make modifications to your Terraform configuration files (e.g., add or update resources, change configurations), running terraform plan will examine the changes and determine what actions need to be taken to reach the desired state.
+-> The plan command does not make any actual changes to your infrastructure. Instead, it shows a summary of the planned actions, including what resources will be created, updated, or destroyed. The output also includes information about any potential errors, missing dependencies, or other issues that Terraform identifies during planning
+
+3. Apply - Provision reproducible infrastructure. (If the apply failed, the run ends in the Apply Errored state)
+-> used to apply the changes planned in the previous step. When you run terraform apply, Terraform will read the execution plan and begin the process of creating, updating, or destroying resources to reach the desired state specified in your configuration.
+-> Terraform will prompt you to confirm the planned actions before proceeding with any changes. Review the execution plan carefully to ensure that you understand the impact of the changes on your infrastructure.
+
+-> terraform state mv [options] SOURCE DESTINATION: merge two state Moving resources from one to the other using 
+-> terraform validate: it will validate syntax of terraform files/command.
+-> terraform destroy: to terminate resources (inverse of terraform apply)
+-> terraform init -upgarde: to update plugins in terraform
+-> terraform refresh: Refreshes state file (used to reconcile the state Terraform knows about {via its state file} with the real-world infrastructure.)
+-> terraform show: Provide human-readable output from a state or plan file.   
+-> terraform graph: Generate a visual representation of either a configuration or execution plan
+-> terraform fmt: Formats the Terraform files to make them consistent and easy to read (rewrite configuration files in canonical styles and format)
+-> terraform state: Provides information about the "current state of the infrastructure resources" managed by Terraform.
+-> terraform output: displays the output values of the infrastructure resources created by Terraform.
+-> terraform import: imports existing infrastructure resources into Terraform state so that they can be managed using Terraform.
+-> terraform workspace: to create and manage multiple workspaces, which are isolated environments for managing infrastrcture resources.
+->  terraform taint command informs Terraform that a particular object has become degraded or damaged.
+
+Q. Duplicate resource error in terraform?
+-> Possible causes of this could be: you (or someone else ) have executed your Terraform code/.tf file and you don't have a shared / updated state.
+-> to update: terraform refresh
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** (Tfstate) state in terraform : condition of a resource is called state in a given time. 
+
+** Terraform Module:
+-> Terraform modules are a way to organize and encapsulate sets of resources with a specific purpose or functionality.
+-> All configuratin files of terraform are saved here publicly in a single directory so that everyone can access it.
+-> Even a simple configuration consisting of a single directory with one or more ".tf" file is a module.
+-> Modules in Terraform are written in HashiCorp Configuration Language (HCL) or, in some cases, in JSON.
+-> When you run Terraform commands directly from such a directory, it is considered the root module.
+   to reuse we are creating .tf instead of normal file, if we delete it, we can not recreate other file usng it. (if u delete in local and backend also)
+-> Terraform modules enable you to create reusable and shareable components that define the configuration for various infrastructure resources, such as virtual machines, networks, storage, and more.
+-> These modules are designed to be instantiated multiple times and can be parameterized, allowing you to customize the resources created based on your specific needs.
+-> Terraform modules help in managing infrastructure as code and provide a convenient way to structure and maintain Terraform configurations for complex deployments.
+
+** Types of modules: Root, child and Published
+-> Child Modules: A Terraform module (usually the root module of a configuration) can call other modules to include their resources into 
+   the configuration. 
+-> A module that has been called by another module is often referred to as a child module.(which calls is called parent, root module)
+
+1. Root Module:
+-> The "Root module" is the main entry point of a Terraform configuration. It represents the top-level directory where you typically define your infrastructure resources and other Terraform components. The root module can contain various Terraform configuration files (.tf files) that define the resources to be provisioned.
+-> The root module typically contains the provider configurations (e.g., AWS, Azure, Google Cloud) and may also include variable definitions, data sources, and outputs. It is responsible for orchestrating the provisioning of resources and may call one or more child modules to break down the configuration into reusable and manageable components.
+
+2. Child Module:
+-> A "Child module" is a self-contained Terraform configuration that can be used as a building block within the root module or other child modules. Child modules encapsulate specific functionality or resources, allowing you to create reusable and modular configurations.
+-> By creating child modules, you can abstract complex configurations into simpler components, making your Terraform code more organized and maintainable. Child modules can have their own variables, outputs, and resource definitions.
+
+3. Published Module:
+-> A "Published module" refers to a reusable Terraform configuration that is shared and made available for use by other users or teams. Once you create a child module or a set of related modules that have value beyond a specific project, you can publish them to a public or private module registry.
+
+Q. What is the main TF file in Terraform?
+-> main.tf will contain the main set of configuration for your module. 
+-> variables.tf will contain the variable definitions for your module.
+-> You can also create other configuration files and organize them however makes sense for your project.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What are variables in terraform and types of variables?
+-> variables are used to define and pass values dynamically to configuration files. They provide a way to make your Terraform configurations more flexible and reusable. 
+-> Instead of hard-coding values directly into your code, you can use variables to pass values from the command line, environment variables, or external configuration files.
+-> There are several types of variables in Terraform:
+1. Input Variables:
+Input variables are used to declare the parameters that you want to accept as input when running Terraform. They are defined in the root module or any other module, and their values can be set using command-line flags, environment variables, or by creating a "terraform.tfvars" file.
+Example:
+variable "region" {
+  description = "The Azure region where resources will be created."
+  type        = string
+  default     = "East US"
+}
+
+2. Local Variables:
+Local variables are used to define intermediate values within a module or configuration. They are not exposed as input variables and are typically used for simplifying complex expressions or for storing calculated values.
+Example:
+locals {
+  subnet_prefix = "10.0.1."
+  subnet_count  = 4
+}
+
+3. Output variables:
+-> Terraform configuration, the output variables' values will be displayed in the command-line output, and you can also use them in other Terraform configurations or scripts.
+output "example_output" {
+  description = "An example output variable."
+  value       = "Hello, Terraform!"
+}
+-> In the above example, we define an output variable named "example_output" with a static value of "Hello, Terraform!"
+
+3. Environment Variables:
+Terraform automatically picks up environment variables with the "TF_VAR_" prefix and uses them as input variables. This allows you to set variable values from the shell environment.
+Example:
+export TF_VAR_region="West US"
+
+4. Data Source Values:
+Data sources are used to retrieve information about resources that already exist outside of Terraform. You can use data sources to set variable values based on the attributes of those resources.
+Example:
+data "aws_vpc" "existing" {
+  id = "vpc-12345678"
+}
+variable "vpc_id" {
+  default = data.aws_vpc.existing.id
+}
+
+5. Map and List Variables:
+Terraform allows you to use maps and lists as variable types. Maps store key-value pairs, while lists store ordered sequences of values.
+Example (Map):
+variable "tags" {
+  type = map(string)
+  default = {
+    environment = "dev"
+    app_name    = "my_app"
+  }
+}
+Example (List):
+variable "subnet_ids" {
+  type = list(string)
+  default = ["subnet-1", "subnet-2"]
+}
+-> By using variables in Terraform, you can create flexible and reusable configurations, making it easier to manage infrastructure changes and promote best practices across your deployments.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is implicit and explicit dependency?
+-> In Terraform, implicit and explicit dependencies refer to the relationship between resources in a Terraform configuration.
+-> An implicit dependency occurs when Terraform automatically determines that one resource requires another resource to be created first. 
+   For example, if you have a resource that creates an Amazon S3 bucket, and another resource that uploads an object 
+   to that S3 bucket, Terraform will automatically create the S3 bucket before uploading the object, even if this relationship 
+   is not explicitly stated in the configuration.
+-> An explicit dependency, on the other hand, is a relationship between resources that is explicitly defined in the Terraform configuration. 
+   For example, you can use the depends_on argument in Terraform to specify that one resource depends on another resource. 
+   This makes it easier for Terraform to determine the order in which resources should be created, and can also make the relationships 
+   between resources more transparent.
+-> In general, Terraform encourages the use of explicit dependencies, as they make the relationships between resources more clear and easier to understand.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> Terraform Components: Terraform Core and Terraform Plugins
+1. Terraform Core: Oversees the reading and interpolation of resource plan executions, resource graphs, state management features and configuration files. (Having lifecycle, init, plan and apply)
+2. Terraform Plugins: These are executable binaries written in "Go" that communicate with Terraform Core over an RPC(Remote Procedure Call) interface. 
+-> Each plugin exposes an implementation for a specific service.
+-> Terraform D is a plugin used on most in-service systems and Windows. Terraform init by default searches next directories for plugins.
+
+** Data sources in Terraform are used to get information about resources external to Terraform, and use them to set up your Terraform resources. 
+-> For example, a list of IP addresses a cloud provider exposes.
+
+** Null resource: It implements std resource lifecyle but takes no further actions on it. (No .tf file in it)
+-> Instead, it is used as a placeholder to perform arbitrary actions when a certain condition is met.
+Uses:
+1. Running local-exec provisioners: null_resource can be used to run a local-exec provisioner, which allows you to execute local commands on the machine where Terraform is running. This can be useful for running scripts or performing actions that are not directly related to infrastructure creation.
+2. Triggering other resources: null_resource can be used to trigger other resources based on a certain condition. For example, you can use a null_resource to create a random string or number that is then used in the creation of another resource.
+3. Creating dependencies: null_resource can be used to create dependencies between resources. For example, you can use a null_resource to ensure that a certain resource is created before another resource is created.
+4. As a workaround for missing features: In some cases, null_resource can be used as a workaround for missing features in Terraform. For example, if you need to run a script that Terraform does not have a built-in provider for, you can use a null_resource to run the script instead.
+
+-> Backend in terraform?  (it itself is a backend operator, stores its state data files) (what is the data of resources in backend)
+-> Terraform uses persisted state data to keep track of the resources it manages.
+-> While executing next command in terraform, previous command is stored in terraform backend (in state files like backup)
+-> Most non-trivial Terraform configurations either integrate with Terraform Cloud or use a backend to store state remotely.
+
+Q. What are the two types of backends in Terraform?
+-> Based on this, Terraform backends are classified into two types.
+a. Enhanced Backend – Additional operations like plan, apply, etc. on remote.
+b. Standard backend – Simple State file storage and lock facility.
+
+Q. How do I create a backend in Terraform?
+-> To set this up using terraform remote state, 
+   I usually have a separate folder called remote-state within my dev and prod terraform folder. 
+   Then get into this folder using cd remote-state , and run terraform init && terraform apply - this should only need to be run once.
+
+Q. Diff between .tf and .tfstate:
+-> .tf files are used to define the desired state of the infrastructure, while .tfstate files are used to store the current state of 
+   the infrastructure managed by Terraform. 
+-> The .tf files are the input to Terraform, while the .tfstate files are the output. 
+-> The .tfstate files are critical to the proper functioning of Terraform, as they are used to determine what changes need to be 
+   made to bring the infrastructure into the desired state. 
+   
+Q. What is Tfstate file and its backend process?
+-> "tfstate" and is held in the same directory where Terraform is run. It is created after running terraform apply.
+-> The actual content of this file is a JSON formatted mapping of the resources defined in the configuration and 
+   those that exist in your infrastructure.
+
+-> State file: To record information about what has been deployed by the tool which describes condition of resources.
+-> Terraform state file lock: It will make sure that the state is “locked” if it's presently in use by another user 
+   (the second user cannot perform terraform apply)
+-> At a time both person using same .tf file, one person will perform operation apply then other person can't operate.
+
+-> can you merge two states in terraform?
+** Merging two states involves moving resources from one to the other using 
+    terraform state mv [options] SOURCE DESTINATION 
+   [a]. Note: Use the version of Terraform that matches the desired end state to perform the operations.
+
+Q. How we recover failed terraform apply?
+-> You need to restore, then need to recreate the state you lost, that or delete every object you created via 
+   Terraform and start again. Most objects have the ability to import existing objects via the Terraform import command.
+
+Q. How to Recover from a Corrupted State File?
+Option 1: Copy a previous version of the state file into the same bucket.
+Option 2: Permanently delete the current version of the file (i.e., the corrupted one)
+
+Q. What is a dynamic block in Terraform?
+-> Terraform provides the dynamic block to create repeatable nested blocks within a resource. A dynamic block is similar 
+   to the for expression. Where for creates repeatable top-level resources, like VNets, dynamic creates nested blocks within 
+   a top-level resource, like subnets within a VNet.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------** Terraform providers:
+-> A provider is responsible for understanding API interactions and exposing resources. 
+-> This includes Cloud providers and Software-as-a-service providers. The providers are specified in the Terraform configuration code. 
+-> They tell Terraform which services it needs to interact with or which resource.
+-> How to provide: Providing Terraform providers involves installing (terraform init), configuring 
+  (necessary credentials and configuration settings, involves providing access keys, API endpoints, and other 
+   settings required by the provider), and using the provider (terraform plan, terraform apply, and terraform destroy 
+   to create, update, and delete resources using the provider) to manage resources in a specific cloud provider or service.
+-> The process varies depending on the provider, but the steps above provide a general framework for working
+    with Terraform providers.
+
+Q Is provider is mandatory to give in tf file? if u give/dont give provider what will happen ?
+-> A provider configuration block is required in every Terraform configuration.
+* If given provider, A provider in Terraform is a plugin that enables interaction with an API. This includes Cloud providers and 
+  Software-as-a-service providers. The providers are specified in the Terraform configuration code. They tell Terraform which 
+  services it needs to interact with.
+* If not given provider,  Terraform creates a default provider to use with such resources. The default provider loads 
+  configuration values from environment variables or the ~/. oci/config file.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+** Provisioners: Used to execute actions that are not directly related to resource creation, but rather to configure or manage resources after they have been created.
+1. Remote-Exec Provisioner:
+-> The "remote-exec" provisioner in Terraform is used to run commands or scripts on a remote resource, typically an instance or virtual machine created by a cloud provider like AWS, Azure, or Google Cloud. The remote-exec provisioner is often used for tasks such as software installation, configuration management, or initializing resources.
+-> Example of using a remote-exec provisioner in a Terraform configuration:
+resource "aws_instance" "web_server" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y nginx",
+      "sudo service nginx start",
+    ]
+  }
+}
+-> In this example, the "remote-exec" provisioner runs a series of commands on the AWS EC2 instance after it has been created. It installs the Nginx web server and starts the service.
+
+2. Local-Exec Provisioner:
+The "local-exec" provisioner, on the other hand, runs commands or scripts on the machine where Terraform is being executed. It is commonly used for local tasks, such as running shell commands or scripts on the machine running Terraform, typically during the terraform apply process.
+-> Example of using a local-exec provisioner in a Terraform configuration:
+resource "aws_instance" "web_server" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+
+  provisioner "local-exec" {
+    command = "echo 'Instance IP: ${self.public_ip}' >> instance_ips.txt"
+  }
+}
+In this example, the "local-exec" provisioner runs a shell command on the machine executing Terraform. It echoes the public IP address of the AWS EC2 instance into a text file named "instance_ips.txt" in the current working directory.
+
+** Remote exec: provisioner invokes a script on a remote resource after it is created. This can be used to run a configuration management tool, bootstrap into a cluster, etc
+** Local-exec: provisioner invokes a local executable after a resource is created. This invokes a process on the machine running Terraform, not on the resource.
+ 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-> Meta arguments: Specifies which provider configuration to use for a resource, overriding Terraform's default behavior of selecting one based on the resource type name. Its value should be an unquoted <PROVIDER>.
+
+Q. Why do we use terraform import?
+-> Terraform can import existing infrastructure resources. This functionality lets you bring existing resources under Terraform management. 
+## Warning: Terraform expects that each remote object is bound to only one resource address. You should import each remote object to only one Terraform resource address.
+-> Terraform achieves portability by using a provider-based architecture that enables it to interact with various infrastructure resources and services in a consistent way. 
+-> Each provider is responsible for managing resources on a specific platform, and Terraform abstracts away the platform-specific details, enabling users to manage infrastructure resources using a single, consistent language and set of tools.
+
+** Tainted resource: The terraform taint command informs Terraform that a particular object has become degraded or damaged. 
+-> Terraform represents this by marking the object as "tainted" in the Terraform state, and Terraform will propose to replace it in the next plan you create.
+-> The resource is mis-configured can not be used in present lifecycle but can not be used after tainted/repaired.
+
+** Terraform directory: Terraform uses to manage cached provider plugins and modules, record which workspace is currently active, and record the last known backend configuration in case it needs to migrate state on the next run.
+
+Q. How to unlock tfstate on azure platform?
+-> To unlock the tfstate on Azure platform, you will need to perform the following steps:
+1. Open the Azure portal and navigate to the resource group where the tfstate file is stored.
+2. Click on the storage account that contains the tfstate file.
+3. In the storage account menu, click on "Access keys" under the "Settings" section.
+4. Copy one of the storage account keys.
+5. Open your terminal or command prompt and navigate to the directory where your Terraform files are stored.
+6. Run the following command to unlock the tfstate file:
+   $$ az storage blob lease break --account-name <storage_account_name> --account-key <storage_account_key> --container-name <container_name> --blob-name <tfstate_file_name>
+   Replace <storage_account_name>, <storage_account_key>, <container_name>, and <tfstate_file_name> with the appropriate values for your environment.
+7. Once the tfstate file is unlocked, you can modify it as needed. Make sure to lock the tfstate file again when you're done by running the following command:
+   $$ az storage blob lease acquire --account-name <storage_account_name> --account-key <storage_account_key> --container-name <container_name> --blob-name <tfstate_file_name>
+-> Again, replace the placeholders with the appropriate values for your environment.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+Q. Terraform cloud: 
+-> It is a remote environment which is optimized for terraform workflow.
+-> Terraform Cloud is HashiCorp's managed service offering. 
+-> It eliminates/avoids unnecessary tooling and documentation for practitioners, teams, and organizations to use Terraform in production.
+-> Terraform Cloud enables infrastructure automation for provisioning, compliance, and management of any cloud, data center, and service.
+
+Q. Why Terraform cloud:
+-> Terraform allows DevOps Engineers to automate and manage the Data Center Infrastructure, the platforms, and the services that run on those platforms, all from one location, that you can reuse and share.
+-> Azure cloud we are integrating with terraform.
+	
+Q. Data types in terraform?
+-> Terraform supports a number of types, including string, number, bool, list, map, set, object, tuple, and any.
+-> string: a sequence of characters representing some text, such as “hello”.
+-> number: a numeric value. ...
+-> bool: either true or false.
+-> list (or tuple ): a sequence of values, like ["us-west-1a", "us-west-1c"]
+-> map (or object): a group of values identified by named labels, like {name = "Mabel", age = 52}.
+-> null: a value that represents absence or omission. If you set an argument of a resource to null, Terraform behaves as 
+   though you had completely omitted it 
+  —> it will use the argument's default value if it has one, or raise an error if the argument is mandatory. 
+  -> null is most useful in conditional expressions, so you can dynamically omit an argument if a condition isn't met.
+-> tupple: specifying some value 
+
+Q. What are the types of variable declaration in terraform
+1. Interactive 
+2. Command line		(First priority)
+3. Environment
+4. TF var file
+5. Auto .TF var file 	(Second priority)
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Q. How do I run Terraform locally?
+-> Run Terraform plan
+a. Navigate to your application infrastructure code - cd modernisation-platform-environments/terraform/environments/my-application
+b. Run a Terraform init - terraform init
+c. View the workspaces (you have different workspaces for your different environment accounts) - terraform workspace list
+d. Select the required workspace - terraform workspace select my-application-development
+e. Run a Terraform plan - terraform plan
+
+Q. How is Terraform different from Ansible?
+-> Terraform excels as a cloud infrastructure provisioning and deprovisioning tool with an IaC approach. It's a specific tool with a specific purpose. Ansible offers an all-purpose, cross-domain automation solution. Both have active open source communities and well-supported downstream commercial products.
+-> Ansibe is configuration tool which manages resources
+
+Q. Have you worked on Terraform with Azure? 
+-> Azure Bicep is a domain-specific language (DSL) that uses declarative syntax to deploy Azure resources. 
+-> In a Bicep file, you define the infrastructure you want to deploy to Azure, and then use that file 
+   throughout the development lifecycle to repeatedly deploy your infrastructure
+
+Q. What are terraform actions?
+-> The hashicorp/setup-terraform action is a JavaScript action that sets up Terraform CLI in your GitHub Actions workflow 
+   by: Downloading a specific version of Terraform CLI and adding it to the PATH .
+
+Q. How can you define dependencies in Terraform?
+-> You can use depends_on to declare the dependency explicitly. You can also specify multiple resources in the 
+   depends on argument, and Terraform will create the target resource after all of them have been created.
+
+Q. how two people using two different data infrastructure using same working directory
+-> it requires proper planning and coordination.
+1. One approach could be to use separate Terraform workspaces for each person. Workspaces allow you to maintain multiple 
+   variations of the same infrastructure, each with its own state file. This way, each person can work on their own data 
+   infrastructure using the same working directory, and Terraform will maintain separate state files for each workspace, 
+   ensuring that each person's changes do not affect the other person's infrastructure.
+2. Another approach could be to use separate directories for each person's Terraform configuration, and use a version control 
+   system like Git to manage the code. Each person would clone the repository to their own local machine, make changes to their 
+   own directory, and then push those changes to the central repository. This approach would require more coordination, as the two 
+   people would need to merge their changes and resolve conflicts, but it would allow each person to work on their own infrastructure 
+   while still using the same codebase.
+-> In both cases, it's important to have a clear understanding of the infrastructure dependencies and to ensure that changes made 
+   by one person do not negatively impact the other person's infrastructure.
+
+Q. How do we define multiple provider configurations?
+-> You can optionally define multiple configurations for the same provider, and select which one to use on a per-resource or per-module basis. 
+-> The primary reason for this is to support multiple regions for a cloud platform; other examples include targeting multiple 
+   Docker hosts, multiple Consul hosts, etc
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Task1:
+Azure task.
+1.create vm linux(2 types) and windows - all 3 new again ( master slave 1 slave 2) all 3 different regions ..
+do network peering to m-s1, m-s2, change inbound rule to 8000 outbound to 8000-9000
+Task 2..terraform variables 5 types execute
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = "3.12.0"s
+    }
+  }
+}
+provider "azurerm" {
+  features {}
+  subscription_id = ""
+  client_id       = ""
+  client_secret   = ""
+  tenant_id       = ""
+}
+ resource "azurerm_resource_group" "test" {
+   name     = "acctestrg"
+   location = "West US 2"
+ }
+ resource "azurerm_virtual_network" "test" {
+   name                = "acctvn"
+   address_space       = ["10.0.0.0/16"]
+   location            = azurerm_resource_group.test.location
+   resource_group_name = azurerm_resource_group.test.name
+ }
+ resource "azurerm_subnet" "test" {
+   name                 = "acctsub"
+   resource_group_name  = azurerm_resource_group.test.name
+   virtual_network_name = azurerm_virtual_network.test.name
+   address_prefixes     = ["10.0.2.0/24"]
+ }
+ resource "azurerm_public_ip" "test" {
+   name                         = "publicIPForLB"
+   location                     = azurerm_resource_group.test.location
+   resource_group_name          = azurerm_resource_group.test.name
+   allocation_method            = "Static"
+ }
+ resource "azurerm_lb" "test" {
+   name                = "loadBalancer"
+   location            = azurerm_resource_group.test.location
+   resource_group_name = azurerm_resource_group.test.name
+
+   frontend_ip_configuration {
+     name                 = "publicIPAddress"
+     public_ip_address_id = azurerm_public_ip.test.id
+   }
+ }
+
+ resource "azurerm_lb_backend_address_pool" "test" {
+   loadbalancer_id     = azurerm_lb.test.id
+   name                = "BackEndAddressPool"
+ }
+
+ resource "azurerm_network_interface" "test" {
+   count               = 2
+   name                = "acctni${count.index}"
+   location            = azurerm_resource_group.test.location
+   resource_group_name = azurerm_resource_group.test.name
+
+   ip_configuration {
+     name                          = "testConfiguration"
+     subnet_id                     = azurerm_subnet.test.id
+     private_ip_address_allocation = "dynamic"
+   }
+ }
+
+ resource "azurerm_managed_disk" "test" {
+   count                = 2
+   name                 = "datadisk_existing_${count.index}"
+   location             = azurerm_resource_group.test.location
+   resource_group_name  = azurerm_resource_group.test.name
+   storage_account_type = "Standard_LRS"
+   create_option        = "Empty"
+   disk_size_gb         = "500"
+ }
+
+ resource "azurerm_availability_set" "avset" {
+   name                         = "avset"
+   location                     = azurerm_resource_group.test.location
+   resource_group_name          = azurerm_resource_group.test.name
+   platform_fault_domain_count  = 2
+   platform_update_domain_count = 2
+   managed                      = true
+ }
+
+ resource "azurerm_virtual_machine" "test" {
+   count                 = 2
+   name                  = "acctvm${count.index}"
+   location              = azurerm_resource_group.test.location
+   availability_set_id   = azurerm_availability_set.avset.id
+   resource_group_name   = azurerm_resource_group.test.name
+   network_interface_ids = [element(azurerm_network_interface.test.*.id, count.index)]
+   vm_size               = "Standard_DS1_v2"
+
+   # Uncomment this line to delete the OS disk automatically when deleting the VM
+   # delete_os_disk_on_termination = true
+
+   # Uncomment this line to delete the data disks automatically when deleting the VM
+   # delete_data_disks_on_termination = true
+
+   storage_image_reference {
+     publisher = "Canonical"
+     offer     = "UbuntuServer"
+     sku       = "16.04-LTS"
+     version   = "latest"
+   }
+
+   storage_os_disk {
+     name              = "myosdisk${count.index}"
+     caching           = "ReadWrite"
+     create_option     = "FromImage"
+     managed_disk_type = "Standard_LRS"
+   }
+
+   # Optional data disks
+   storage_data_disk {
+     name              = "datadisk_new_${count.index}"
+     managed_disk_type = "Standard_LRS"
+     create_option     = "Empty"
+     lun               = 0
+     disk_size_gb      = "500"
+   }
+
+   storage_data_disk {
+     name            = element(azurerm_managed_disk.test.*.name, count.index)
+     managed_disk_id = element(azurerm_managed_disk.test.*.id, count.index)
+     create_option   = "Attach"
+     lun             = 1
+     disk_size_gb    = element(azurerm_managed_disk.test.*.disk_size_gb, count.index)
+   }
+
+   os_profile {
+     computer_name  = "hostname"
+     admin_username = "testadmin"
+     admin_password = "Password1234!"
+   }
+
+   os_profile_linux_config {
+     disable_password_authentication = false
+   }
+
+   tags = {
+     environment = "staging"
+
+   }
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
