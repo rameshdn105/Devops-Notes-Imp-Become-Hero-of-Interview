@@ -1,0 +1,856 @@
+java 11		(C, C++)
+git version 2.33	(Git, SVN, Gitlab, Bitbucket )
+apache maven 3.8.6	(Maven, Ant, Gradle)
+Jenkins 2.412
+docker 20.10.22		(Podman, CRI-O, containerd, Firecracker)
+Ansible 2.13.7		(Chef, Puppet)
+Kubernetes 1.23 1.24	(Docker swarm, Apache Mesos)
+terraform_1.5.4
+
+Q. how to run a process in background: 
+-> nohup (No Hang Up) bash filename.sh 		& //// & at the end of command///bg///d is edit///tmux///
+
+Q. Systemctl: Systemctl is a SYSTEMd tool, which is mainly responsible for controlling SYSTEMd system and service manager.
+1. systemctl enable/disable/status/ls-active https.service
+2. systemctl lis-units--type=service
+3. systemctl start httpd.service
+4. systemctl stop httpd.service
+5. systemctl restart httpd.service
+
+Q. what is service account in windows
+-> Type of user account that is used to run a specific service or application on a Windows computer. 
+-> Designed to have limited permissions and are typically used to run services and applications that require specific 
+   access to resources, such as system resources, network resources, or other applications. 
+-> These are created and managed by system administrators, and they are usually assigned to run as a specific 
+   user or system account, depending on the requirements of the service or application being run. 
+-> Unlike a user account, a service account cannot be used to log into a computer or access resources interactively.
+
+Q. what is stream editor? three standard streams in Linux.?
+-> Standard Input (stdin), Standard Output (stdout), Standard Error (stderr)
+-> Stream editor is a text-processing tool used to perform editing operations on input data passed through a pipeline. 
+   It operates by taking input data from standard input (stdin) and writes the output data to standard output (stdout). 
+-> The input data is typically processed as a stream of text, which allows the tool to perform various editing operations 
+   on the data, such as searching and replacing text, transforming text, or deleting text.
+-> Examples of stream editors include the "sed" command in Unix-like operating systems.
+
+Q. What Is a Linux Proxy Server? 
+-> A proxy server is a server that acts as an intermediary between a client and another server.
+-> Used to enhance security or improve performance by caching frequently requested resources, filtering out unwanted traffic, or encrypting data in transit.
+-> Uses: 1) hiding the identity of the client,    
+         2) providing a secure connection to a remote server, or 
+         3) allowing a remote server to access a private network.
+Q. What is reverse proxy?
+-> It is a type of proxy server that retrieves resources on behalf of a client from one or more servers. 
+   These resources are then returned to the client as if they originated from the reverse proxy server itself. 
+-> Used to provide load balancing, encryption, and caching services for a group of servers.
+
+Q. How to set a proxy?
+-> If you want to set a proxy you need to edit the file /etc/environment sudo nano /etc/environment
+   and then put these lines - http_proxy=http://10.1.1.1:3128/
+-> http_proxy is the system variable that you want to edit
+-> http://10.1.1.1:3128 is the IP address of your proxy server and its port? If you are scared to the terminal 
+   you also can go to the system settings -> network -> network proxy and add your configuration.
+## To use a proxy on the Linux command-line, you can set the environment variables http_proxy, https_proxy or 
+   ftp_proxy, depending on the traffic type.
+-> These proxy server settings are used by the almost all Linux command-line utilities, 
+   e.g. ftp, wget, curl, ssh, apt-get, yum and others.
+
+Q. VPN (Virtual Private Network) 
+-> VPN creates an encrypted tunnel between the server and your PC/user. 
+-> but according to the provider, this can save some registries about your activity. A good VPN provider tries to avoid saving your activity. 
+-> To use a VPN you must have a VPN client while to use a proxy you only need to do some configurations. Also, you can use a VPN to 
+   access to restricted geographic content from services like Netflix, Youtube, and others.
+  
+Q. What is load average in Linux?
+-> Load average in Linux represents the average number of processes in the run queue over different time periods: 1-minute, 5-minute, and 15-minute intervals. It indicates system activity and resource utilization, helping identify potential bottlenecks and capacity planning.
+
+--------------------------------------------------------------------------
+* make file: it is a programm building file which runs in linux (For C, C++). .exe artifact will be produced.
+  For Java, maven is compiler and .jar and .war file will be created.
+* nohup (No Hang Up: how to run a process in background: nohup bash filename.sh & //// & at the end of command///bg///d is edit///tmux///
+* Ping: to check the process up and running. 
+* Uptime: for how long the process was running.
+* Swap memory: if close suddenly, if u open it will be saved in swap memory (whether save or recover)
+  Swap space in Linux is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, 
+  inactive pages in memory are moved to the swap space. While swap space can help machines with a small amount of RAM, it should not be considered a 
+  replacement for more RAM.
+
+** Zombie process: In Linux OS, a zombie process or a defunct process is a finished (dead) process, 
+   but it has still occupied an entry in the process table. 
+-> Normally, a child process that has completed its execution will send a SIGCHLD signal to the parent process which has created it.
+-> When a process becomes dead, it will free up the memory and other resources allocated to it. 
+   So, a zombie process will not be using any resources at all, other than an entry in the process table. 
+   The problem may start only when a large number of zombie processes exist and system run out of PIDs
+  
+-> Killing the parent process
+   If the zombie processes are not able to get removed, you should kill the parent process or restart the service 
+   to get rid of the zombies. When a parent gets killed, all child processes will become the child process of ‘init process (PID 1)’.
+   Init process will wait for the children to die by sending a wait signal which in turn removes the zombie processes. 
+   The parent process can be killed using the ‘kill’ command:
+   $$ kill -9
+
+* Daemon process: A daemon is also called background processes. It is a UNIX or Linux program that executes 
+  inside the background. Almost every daemon contains names that finish with "d" the letter. 
+  For example, sshd, this manages connections of SSH remote access, or the httpd daemon that manages the Apache server. 
+  Often, Linux begins daemons at starting time.
+
+
+## Important commands used in Linux:
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+*Vi modes: Command mode, insert mode and extended mode
+-- command mode: is used for navigation and manipulation commands. (dd, x, yy, p ....)
+-- Insert mode: is for typing and editing content.
+-- extend mode: (Command-line mode) is for executing more complex commands related to file management and search/replace operations.(:w, :q, :wq!, :q!, :% s/old/new/g )
+
+*tar cvf file.tar *.c  : This command creates a tar file called file.tar which is the Archive of all .c files in current directory. 
+*tar xvf file.tar : This command extracts files from Archives. 
+    -c : Creates Archive 
+    -x : Extract the archive 
+    -f : creates archive with given filename 
+    -v : Displays Verbose Information
+
+locate sample.txt   Locate a file stored in linux
+diff abc.conf xyz.conf      to find the difference in two configuration files
+zcat sample.z   .z extension means that the file has been compressed, To look at                the contents of the compressed file,
+
+lsof-list open files
+mount -l: mounted devices on linux
+cp *.jason /d1/d2   :to copy all .jason files to /d1/d2 folder
+touch <filename> -used to create file
+touch f1 f2 -  create multiple files
+mkdir <dir name> - used to create directory
+ll - Listing files and directories in long format
+ls - used to check/list files and directories
+ls -l - Listing files and directories in long format
+ls -lt - Listing files and directories in long format with time
+ls -lrt - reverse ls -lt
+ls -a - Listing hidden files 
+ls -al - Listing hidden files in long format
+ls -i - lists files with inode number
+ls-s - lists file with their size
+ls -S - lists files with their size and sorts the list by file size
+pwd - present working directory
+cd - change directory
+cd .. - come out of directory 1 level
+cd ../.. - come out of directory 2 level
+cd dir1/dir2 - used to go 2 dir forward 
+cp f1 f2 - copy file f1 to f2 (Destination file)
+mv f1 f2  - move file f1 to f2 
+rm filename   : removes file 
+vi filename - Used to edit the file or add content to a file  (Command mode, insert mode and extended mode)
+esc :wq! - used to save and quit the file
+esc :q! - used to quit the file without saving.
+cat filename - used to display the content of the file on the console
+esc :set number - used to set the number to a file content
+esc :set nonu - used to remove the line numbers
+esc dd : deleting whole line in a file
+!!: execute last command typed
+Nohup: No hang up : Keep processes running even after exiting the shell/terminal.
+	
+** Replace a string - used to replace a string when file is opened
+esc :% s/str1/str2/g
+s - substitute
+g - globally - used to replace a string everywhere in the file
+1. esc : 1 s/str1/str2/g - used to replace str1 to str2 everywhere in the line.
+2. esc : 1,3 s/str1/str2/g - used to change string from 1st to 3rd line
+3. esc : 1 s/str1/str2/1 - used to change str1 to str2 from 1st line & 1st occurence only
+4. esc :/string - It will move to 1st occurence and you keep pressing  "n" to 2nd occurence and so on..
+
+** cp (copy) : It is used to copy content of a file from one to another.
+syn : cp sourcefile destinationfile
+-> If  destination file doesn't exist then it will create and copy it . If it is already exist then it will override the content.
+
+-> mv (move/Rename) : It is used to rename a file and also here source file will get deleted and move the content to the destination file.
+syn : mv sourcefile destinationfile
+
+mv f1 d1  -can be file to another directory but new directory shoud be in current working dir.
+
+** shells: There are 3 types of shell
+1. bashrc
+2. kshell
+3. cshell
+
+echo : Used to print any statement 
+syn : echo "message"
+
+Alternative for echo command
+printf "stmnt\n"
+
+** wc (word count) : It is used to count the no. of lines, no. of words, no. of characters in a file
+syn : wc filename  
+If you want to print only no. of lines in a file
+syn : wc -l filename
+If you want to print only no. of words in a file
+syn : wc -w filename
+If you want to print only no. of characters in a file
+syn : wc -c filename
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Ridirect (>) command : It is used to write the o/p of one command to a destination file.
+If destinationfile exists It will override the content, if destinationfile doesn't exists it will ceate new file and redirect the o/p
+for eg : echo "stmt" > destinationfile
+
+Append (>>) : It is used to write the o/p of one command to a destination file.
+If destinationfile exists It will not override the content, instend it will just append the o/p to the end of a file.
+for eg : echo "stmt" >> detinationfile
+
+Types used to append:
+1) echo "stmt" >> detinationfile
+2) printf "stmnt\n" >> destination file
+3) cat f1.1 >> f1
+4) cat f1.2 | tee -a f1
+5) echo "stmnt" | tee -a f1
+6) cat >>f1<<EOF
+> statement
+> EOF
+7) cat << EOF | tee -a f1
+> statement
+> EOF
+
+Switch to the root user: sudo su - 
+useradd <username> - used to add user in linux (Added user will also act as group user also)
+groupadd <groupname> - used to add group in linux
+userdel <username> - Switch to the root user: sudo su -       
+
+-------------------------------------------------------------------------------------------------------
+chmod - used to change permissions for files and directories
+default permission for a file: rw rw r
+default permission for a directory: rwx rwx r-x
+
+1. Absolute mode: $ chmod <permission> filename
+r - read - 4
+w - write - 2
+x - execute - 1
+user group others
+rwx  rwx   rwx
+4+2+1 4+2+1 4+2+1
+  7    7     7
+for eg : l - used to change permissions for file
+for eg : chmod -R 621 directoryname - used to change permissions for directory
+
+2. Symbolic mode: $ chmod <target>(+/-/=)<permission> <filename>
+'+' is used for adding permission
+'-' is used for removing permission
+'=' is used for setting the permission
+<permissions> can be r: read; w: write; x: execute.
+<target> can be u : user; g: group; o: other; a: all
+note :  without using binary format also we can assign permissions to files and directories
+for eg : chomod u+rw, g+rx, o+x filename
+         chmod a+rwx filename
+
+--------------------------------------------------------------------------------------------------------
+chown - used to change ownership of a files and directories
+for eg : chown newownername filenme
+for eg : chown -R newownername directoryname
+
+chgrp - used to change groupname for files and directories
+for eg : chgrp newgroupname filename
+for eg : chgrp -R newgroupname directoryname
+
+umask : It is used to set default permission.
+Note : It is reverse of chmod
+syn : umask 000 filename
+For eg : chmod 777 filename
+               777 
+              ------
+        umask  000 filename 	
+
+777 - 654 = 123 
+
+rm command - used to delete files and directories
+For files - rm filename 
+for directory - rm -rf directory
+r - recursive f - forcefully
+
+To transfer a file from 1 server to another server (local to remote, remote to local, remote-remote)
+1 scp : (Disad:whole file sends) (SCP:  Secure Copy)
+syn : scp filename username@server2ip:path
+2 rsync: (exclude some file) (Rsync: Remote Sync )
+syn : rsync -ap filename username@server2ip:path
+
+* Diff between scp and rsync
+-> While copying the files from 1 server to another server, if copying is stopped due to some network issue , once system
+   is back online, the scp command will start copying from the begining whereas in case of rsync it will start copying from where it is stopped.
+-> scp simply overwrites the files in the destination, if they already exist. Whereas, rsync, skips the files which are already available in the destination.
+
+-> ping : It is used to check whether the server is up and running.
+syn : ping <ipaddress>
+	// it displays pockets transmitted and pockets recieved. if no pockets recieved, u can use traceroute command to check.
+-> traceroute: prints the route that a packet takes to reach the host. This command is useful when you want to know about the route and 
+	about all the hops that a packet takes. 
+	Below image depicts how traceroute command is used to reach the Google(172.217.26.206) host from the local machine and 
+	it also prints detail about all the hops that it visits in between.
+
+Traceroute: Prints the route that a packet takes to reach the host. 
+It is useful when you want to know about the route & about all the ops that a packet takes.
+
+Finger: Finger command is a user information lookup command which gives details of all the users logged in. This tool is generally used by system administrators. It provides details like login name, user name, idle time, login time, and in some cases their email address even.
+
+tee - It is used to write the o/p of a command to a file as well as it displays content on the console.
+syn : cat f1 | tee log
+
+uptime : It is used to check how long the system is up and running
+syn : uptime
+
+top : It is used to check which process is taking high cpu usage.
+syn : top
+
+-- top: pre-installed, shows processes that consume most system support, no scrolling support, doesnt show process tree, no mouse support, plain text and highlight in bold text to higlight info, older version(1984).
+-- htop: manual-installation needed, shows every ongoing processes, allows horrizontal amd vertical scrolling support, F5 will show ongoing process in tree format, has mouse support, has a beautiful colored interface, newer version (2004).
+ 
+-- More, less and most: All of them have similar features such as viewing multiple files simultaneously, but each one has a prominent 
+feature or advantage that might make us consider using it.
+
+-- More: more is one of the oldest terminal pagers in the UNIX ecosystem. Originally, more could only scroll down, but now we can use it to scroll up one screen-full at a time, and scroll down either one line or one screen-full:, no live monitoring,
+space – go to the next page in accordance with the terminal’s size
+b – go back one page
+enter – scroll down one line
+= – display the current line number
+:v – start up the vi text editor at the current line
+
+-- Less: One of the reasons why less was introduced was to allow backward movement line by line. It has a lot of commands that are similar to the vi text editor’s commands, and it supports horizontal scrolling, live monitoring, and more.
+*less supports other file formats such as jar, war, zip, pdf, tar.gz, gif, png, tiff, tif, and rar.
+
+-- most: most allows us to view multiple files simultaneously and switch between them. It’s very useful for viewing large data sets because most does not wrap lines that have more characters than the terminal page. Instead, it truncates them and offers column-by-column horizontal scrolling.
+      
+
+tree : It is used to show the tree structure of files and directories.
+syn : tree
+*To install tree: $ sudo apt-get install tree
+
+free: to check free memory   - -k
+
+wget and curl : These both commands are used to download the data to a server via some supported protocols such as FTP, HTTP, SCP etc
+ 
+To login as root
+1. sudo
+2. sudo bash
+3. su - : if we have password
+4. su root
+
+Grep(Global Regular Expression Print) command : used to search pattern/string in a file.
+syn : grep "pattern" filename - case sensitive
+      grep -i "pattern" filename - case insensitive
+There are many options used with grep command 
+syn : grep [options] pattern filename
+for eg : 
+1. grep -l "pattern" * - Used to display filenames in which pattern is present.
+2. grep -h "pattern" * - Used to display the matched lines, but do not display the filenames.      
+3. grep -n "pattern" * - Used to display the matched lines and their line numbers.
+4. grep -c "pattern" * - Used to count the number of lines that matches a pattern.
+5. grep -v "pattern" * - Used to print all the lines except pattern.
+6. grep "s$" * - used to print all the lines that ends with given pattern letter.
+7. grep "^I" * - used to print all the lines that starts with given pattern letter.
+8. grep -e "pattern1" -e "pattern2" * - Used to search multiple patterns.
+
+Pipe command (|): Pipe command is used to give o/p of one command as input to other command.
+For eg : cat f1 | wc -l
+
+Head and Tail command 
+Head - Used to display the first part of a file, by default it will display first 10 lines in a file.
+syn : head filename
+Tail - used to display the last part of the file, by default it will display last 10 lines in a file.
+syn : tail filename
+For eg :
+1. head -15 filename : Used to display first 15 lines in a file.
+2. tail -2 filename : Used to display last 2 lines in a file.
+3. head -5 filename | tail -1 - used to display 5th line of a file.
+4. head -5 filename | tail -3 - used to display 3 to 5th line in a file.
+Assignment : How to print last 2nd line in a file.
+
+sed command : Sed command is used to replace a string in a file without opening it.
+syn : sed 's/p1/p2/g' filename
+For eg :
+1. sed '1 s/pattern1/pattern2/g' filename - Used to change the pattern in 1 st line without opening file.
+2. sed '3,5 s/pattern1/pattern2/g' filename - Used to change the pattern from 3 to 5th line only in the o/p.
+3. sed '5,$ s/pattern1/pattern2/g' filename - Used to change the pattern from 5th line to end of the line.
+4. sed -i 's/pattern1/pattern2/g' filename - Used to change the pattern/string in the original file without opening it.
+5. sed -n '5p' filename - Used to print 5 th line a file.
+6. sed -n '4,10p' filename - Used to print from 4th to 10th line.
+7. sed -n '5,$p' filename - Used to print from 5th line to end of file. 
+8. sed '5d' filename - Used to delete 5th line in a file.
+9. sed -i '5d' filename -- Used to delete 5th line in original file.
+Note : if you need to change the original file then use -i= insert to a file / modify to a file.
+Note : if you dont use -i it wont affect the original file it will just print the changed output
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Links:
+There are 2 types of links
+1. soft link/ symbolic link
+2. Hard link
+
+Soft link/symbolic link : It is a shortcut to file, if any modifications done to a actual file it will get reflected in original file.
+and if we delete original file then soft link will not work.
+syn : ln -s filename(fullpath) linkname
+
+Hard link :It is a shortcut to file, if any modifications done to a actual file it will get reflected in original file.
+and if we delete original file then hard link will work because it points to a inode of a file.
+syn : ln filename(fullpath) linkname
+
+where inode is a unique identification number which indicates memory address of a file.
+
+*Use the ls -i command to view the inode number. Files that are hard-linked together share the same inode number. 
+The shared inode number is 2730074, meaning these files are identical data
+
+Soft Link (Symbolic Link)							Hard Link
+Type of Link	A reference to the target file/directory	Additional directory entry to the same file
+Data		Does not contain the actual data		Shares the same data with the original file
+Impact on Target	Deleting the link does not affect target	Deleting any link does not affect data or other links
+Cross File Systems	Can span across different file systems	Limited to the same file system
+Supported for		Works for both files and directories	Only supported for files, not directories
+
+Assignment : Explore Bashrc and Bash-profile
+
+Cut: Cut out sections of a specified file or piped data and print the result of std output.
+cut -b -1 filename
+cut -c [list] ]file]
+
+Awk command : Used to cut the content of file column wise.
+For eg :
+1. awk -F " " '{print $1}' filename - used to cut 1st column of a file
+2. awk -F " " '{print $2,$3}' filename - used to cut 2nd and 3rd column.
+3. awk -F " " '{print $NF}' filename - used to cut last column of a file.
+4. awk -F " " '{print $NF, $(NF-1)}' filename - used to cut last 2 columns of a file.
+5. awk -F " " '{print $(NF-1)}' filename - used to cut last 2nd column of a file.
+
+To print 1st column and row:
+Syn: head -1 tx1 && awk -F " " '{print $1}' tx1
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Passwordless connection between 2 servers
+Step 1 - create 2 servers 
+step 2 - Run ssh-keygen -t rsa on server1
+step 3 - copy generated pub key from server 1 and paste it into server2's authorized_keys file 
+step 4 - change permission for authorized_keys file in server2 to 700
+step 5 - Run ssh username@server2_publicip to make passwordless connection between 2 servers.
+
+SSH port 22: The port is used for Secure Shell (SSH) communication and allows remote administration access to the VM. In general, traffic is encrypted using password authentication.
+SSH usually runs over TCP
+SSH protocol's default settings are to listen on TCP port 22 for connections
+
+find command : It is used to find the location of files and directories.
+syn : find . -name "filename"
+     . -> indicates current path
+	 i -> case insensitive
+For eg : 
+1. find . -name "*.txt" - It is used to find .txt file locations
+2. find . -type f "filename" - It is used to find only file locations
+3. find . -type d "directory" - It is used to find only directory locations
+4. find . -type f -empty - It is used to find empty files
+5. find . -type d -empty - It is used to find empty directories
+6. find . -empty - It is used to find both empty files and directories
+7. find . -type f -mtime +60 - It is used to find files that are modified 60 days ago
+8. find . -type f -mtime -30 - It is used to find files that are modified within 30 days.
+9. find . -type f -mmin -15 - It is used to list the files which are modified within last 15 mins.
+10. find . -type f -perm 0644 - It is used to find files that has 0644 permission or user with read and write, group with read and others with read permission.
+11. find . -type f ! -empty - It is used to list non-empty files
+12. find . -type f -size +1k - It is used to find files which are more than 1KB
+
+Netstat : It is used to list listening and non listening ports and also gives statistic info about the network.
+syn : netstat 
+for eg :
+netstat -l : It is used to list only listening ports
+netstat -at : It is used to list all listening non-listening tcp ports
+netstat -lt : It is used to list only listening tcp ports
+netstat -au : It is used to list all listening non-listening udp ports
+netstat -lu : It is used to list only listening udp ports
+netstat -nptl : It is used to check the service ports.
+
+Q. What commands do you know that can be used to check DNS records?
+1. nslookup: query DNS servers for information about a specific hostname or IP address.
+2. dig: This command is similar to nslookup, but provides more detailed information about DNS records.
+3. host: This command is another tool for DNS lookups. It can be used to check the IP address associated with a hostname or the hostname associated with an IP address.
+4. whois: This command can be used to retrieve registration information for a domain name, such as the name of the domain's registrar, the domain's expiration date, and the domain's administrative contact information.
+
+Q. What is a bash alias?
+-> In Bash, an alias is a shorthand name or abbreviation for a command or set of commands. It allows you to define your own 
+   custom commands that can be used in place of longer or more complex commands.
+   $$ alias ll='ls -l'
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+du -sh : Used to find disk usage of file
+syn : du -sh
+du -sh * : used to find disk usage of particular file
+
+df -h : used to check the size of a drive, disk free
+syn : df -h (disk free, disk space)
+
+free: to check free memory   - -k
+free -m, vmstat, top, htop
+-> It's important to note that while the term "free memory" is commonly used, in reality, there is no memory 
+   that is completely unused or free on a running system. Even if memory is not being actively used by an application, 
+   the Linux kernel may be using it for various purposes such as caching data or buffering input/output operations.
+
+uname - used to check the os
+uname -a -> used to check all the info about linux
+who/whoami - used to check how many users logged into system 
+-> (who : Print information about users who are currently logged in. whoami : Print effective username of the user who ran whoami)
+who -r command - to determine a system's run level
+ps -ef -> used to list all the processes which are running in the system
+ps -u "ec2-user" -> used to list of process by particlar user
+ps -ef | grep "process name" - used to check particular process is running or not.
+kill -9 processID -to kill the particular process forcefully  (-9 is used for forcefully)
+ps -4 "user name" -used to show particular process which are run by particular line
+systemctl Command: It controls the systemd system and service manager. 
+Using /etc/inittab File: The default runlevel for a system is specified in the /etc/inittab file for SysVinit System.
+
+ifconfig : To see the private ip address
+hostname : shows private ip address with info
+hostname -i : shows only private ip
+whatismyip: shows public ip adress
+service <processname> restart : Used to restart the process
+service <processname> stop : Used to stop the process
+service <processname> start : Used to start the process
+sudo reboot : To reboot the Linux system from a terminal session
+sudo shutdown -r :reboot now
+sudo hault : 
+sudo shutdown -h now : shutdown within some time (Ex: sudo shutdown -h 60)
+sudo shutdown now : shutdown within sometime
+
+/ is the root directory.
+/bin/ and /usr/bin/ store user commands.
+/boot/ contains files used for system startup including the kernel.
+/dev/ contains device files.
+/etc/ is where configuration files and directories are located.
+
+NS lookup: name server lookup: useful to getting info from DNS server
+tr command:translating and deleting charecters
+ENV: print environment variables
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. FTP:       20 - (the file transfer protocol) :port 20 for data transfers
+   FTP :      21 - to issue commands and to control the FTP session
+2. SSh:       22 - is dedicated to SSH, or secure shell login
+3. Telnet:    23 - to facilitate remote logins but this port entails unencrypted messaging which is not secure so it’s not really recommended for use.
+->  you can use the Telnet client to connect to remote servers or devices.
+4. SMTP:      25 - E-mail routing via SMTP (the simple mail transfer protocol)
+5. WHOIS:     43 - system which can check who owns a domain
+6. DNS :port  53 - Domain Name System 
+-> Domain Name System, translates human readable domain names (for example, www.amazon.com) to machine readable IP addresses (for example, 192.0.2.44).
+7. DHCP:      67 as the server port, and port 68 as the client port.
+-> DHCP (Dynamic Host Configuration Protocol) is a network protocol that allows devices to automatically obtain an IP address, 
+   subnet mask, default gateway, and other network configuration information from a DHCP server.
+8. HTTP:      80 - the hypertext transfer protocol, uses port 80 to deliver web pages
+9. HTTPs:     443 - the secure version of HTTP delivered over TLS/SSL
+10. POP3:     110 - the e-mail centric “post office protocol” uses port 110
+11. NNTP:     119 - is used by the news transfer protocol, NNTP
+12. NTP:      123 - The network time protocol,
+13. IMAP:     143 to retrieve email messages (another email protocol, makes use of port )
+14. SNP :     161 - simple network management protocol
+15. IRC:      194 - is dedicated to IRC, the internet relay chat app
+16. SMTP, the simple mail transfer protocol, uses port 587 or 465 to submit emails
+-> (The SMTP connection is built on something called a TCP connection, which stands for Transmission Control Protocol.) From there, the SMTP client uses 
+   commands to tell the server what to do and transfer data, like the sender's email address, the recipient's email address, and the email's content.
+
+8. HTTP, the hypertext transfer protocol, uses port 80 to deliver web pages
+-> HTTP stands for Hyper Text Transfer Protocol. WWW is about communication between web clients and servers. Communication between 
+   client computers and web servers is done by sending HTTP Requests and receiving HTTP Responses.
+-> An HTTP Proxy serves two intermediary roles as an HTTP Client and an HTTP Server for security, management, and caching 
+   functionality. The HTTP Proxy routes HTTP Client requests from a Web browser to the Internet, while supporting the caching of Internet data.
+9. HTTPS: Port 443 is dedicated to HTTPS, the secure version of HTTP delivered over TLS/SSL
+->  HTTPS uses an encryption protocol to encrypt communications. The protocol is called Transport Layer Security (TLS), although formerly it was known as 
+    Secure Sockets Layer (SSL). This protocol secures communications by using what's known as an asymmetric public key infrastructure.
+
+Q. how http and https works?
+-> HTTP (Hypertext Transfer Protocol) and HTTPS (HTTP Secure) are protocols used to transfer data between a 
+   client (such as a web browser) and a server (such as a website). Both protocols work in a similar manner, 
+   but HTTPS is a more secure version of HTTP.
+-> HTTP works by using a request-response model. When a client sends an HTTP request to a server, the server 
+   responds with an HTTP response. The request and response consist of headers and a message body. 
+   The headers contain information about the request or response, such as the content type and the length of the 
+   message body, while the message body contains the actual data being transferred.
+-> HTTPS, on the other hand, uses a combination of HTTP and SSL/TLS (Secure Sockets Layer/Transport Layer Security) 
+    protocols to provide a secure connection between the client and the server. 
+	The SSL/TLS protocols use a combination of symmetric and asymmetric encryption to encrypt the data being transferred 
+	between the client and the server, making it difficult for anyone to intercept or eavesdrop on the data.
+-> The following are the key steps involved in how HTTPS works:
+1. The client sends a request to the server using the HTTPS protocol. The request is encrypted using SSL/TLS.
+2. The server receives the request and generates a public key and a private key. The public key is sent back to the client as part of the SSL/TLS handshake.
+3. The client receives the public key and uses it to encrypt a symmetric key. The symmetric key is sent back to the server using SSL/TLS.
+4. The server receives the symmetric key and decrypts it using its private key. The symmetric key is then used to encrypt all subsequent communication between the client and the server.
+5. The server sends an HTTPS response to the client, which is encrypted using the symmetric key.
+6. The client receives the encrypted HTTPS response and decrypts it using the symmetric key.
+-> In summary, both HTTP and HTTPS protocols are used to transfer data between a client and a server, but HTTPS 
+   provides a more secure connection by using SSL/TLS protocols to encrypt the data being transferred. 
+  This helps to prevent unauthorized access to the data and ensure the privacy and security of the user's data.
+
+TLS/SSL
+------
+-> TLS (Transport Layer Security) and SSL (Secure Sockets Layer) are both protocols used to provide secure 
+   communication over the internet. They are cryptographic protocols that provide security for communication 
+   between clients and servers over a network.
+-> SSL was developed by Netscape in the mid-1990s and was widely used for secure communication on the 
+   internet until the mid-2000s when it was replaced by TLS. 
+-> TLS is an improved version of SSL and is now widely used for secure communication on the internet.
+-> Both SSL and TLS use a combination of public-key and symmetric-key encryption to provide confidentiality, 
+   integrity, and authenticity. When a client connects to a server using SSL/TLS, the server presents a digital 
+   certificate that contains its public key. The client uses this public key to establish a secure connection with 
+   the server and negotiate the symmetric keys used for encryption.
+-> TLS is used for a variety of purposes including secure web browsing (HTTPS), email, FTP, and other applications that 
+   require secure communication over a network. The latest version of TLS is TLS 1.3, which was released in 2018 and provides 
+   improved security and performance compared to previous versions.
+-> In summary, both SSL and TLS are protocols used to provide secure communication over the internet, but TLS is 
+   the newer and more secure protocol that has replaced SSL.
+
+** Tcp ip protocol and working mechanism
+-> TCP/IP (Transmission Control Protocol/Internet Protocol) is a suite of communication protocols used for transmitting data over networks, including the internet. It is the foundation of modern networking and is widely used for data transmission between computers and devices. TCP/IP is organized into four layers: Application, Transport, Internet, and Link Layer.
+
+1. Application Layer:
+-- The Application Layer is the top layer of the TCP/IP model. It provides communication services directly to end-users and applications. This layer includes various protocols like HTTP, SMTP, FTP, DNS, and more, which enable specific types of communication between applications.
+2. Transport Layer:
+-- The Transport Layer is responsible for the end-to-end communication and reliable data delivery between applications running on different devices. It offers two primary protocols: Transmission Control Protocol (TCP) and User Datagram Protocol (UDP).
+-- TCP provides reliable, connection-oriented communication by ensuring that data packets are delivered in order and without loss or duplication. It performs flow control and congestion control to optimize data transfer.
+-- UDP is a simpler, connectionless protocol that does not guarantee reliable delivery. It is often used for real-time applications like streaming and online gaming, where some data loss is acceptable.
+3. Internet Layer:
+-- The Internet Layer is responsible for routing packets across the network. It uses IP (Internet Protocol) to handle addressing and packet forwarding. Each device on the network is assigned a unique IP address to identify its location.
+When a packet is sent from the source device, the Internet Layer adds the source and destination IP addresses to the packet header. Routers use this information to forward the packet towards its destination.
+4. Link Layer:
+-- The Link Layer is responsible for data transmission over the physical network medium, such as Ethernet or Wi-Fi. It handles data framing, addressing within the local network, and error detection.
+The Link Layer encapsulates IP packets into frames appropriate for the specific network medium and forwards them to the next hop.
+
+Working Mechanism:
+-- When data needs to be transmitted from one device to another over a TCP/IP network, the following steps occur:
+-- The application data is passed to the Transport Layer, where it is divided into smaller chunks called segments (TCP) or datagrams (UDP).
+-- Each segment or datagram is encapsulated with the source and destination port numbers in the Transport Layer header.
+-- The Transport Layer hands the segments or datagrams to the Internet Layer, where it adds the source and destination IP addresses to the packet header.
+-- The packet is then passed to the Link Layer, which encapsulates it into a frame with the source and destination MAC addresses appropriate for the local network medium.
+-- The frame is transmitted over the network, and routers in the network use the destination IP address to forward the packet towards its destination.
+-- When the packet reaches its destination device, it goes through the reverse process of decapsulation at each layer. The application data is delivered to the appropriate application running on the destination device.
+-> This process allows for reliable and efficient data transmission over the internet and other TCP/IP-based networks. TCP/IP is a fundamental protocol suite, enabling global connectivity and communication between a vast array of devices and services.
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Open Systems Interconnection
+----------------------------
+The OSI (Open Systems Interconnection) model is a conceptual framework used to understand and describe the functionalities and interactions of networking protocols and systems. It consists of seven distinct layers, each responsible for specific tasks and communication functions. The model was developed by the International Organization for Standardization (ISO) to facilitate interoperability between different networking technologies and devices.
+
+-> The seven layers of the OSI model, from the bottom (Layer 1) to the top (Layer 7), are as follows:
+1. Layer 1 - Physical Layer: The Physical Layer deals with the physical transmission of data over the network medium. It defines the hardware specifications, such as cables, connectors, switches, and network interface cards. Its primary concern is transmitting raw binary data as electrical or optical signals.
+2. Layer 2 - Data Link Layer: The Data Link Layer provides node-to-node data transfer and error detection and correction within the local network segment. It is responsible for converting raw data from the Physical Layer into frames and addressing them. Switches operate at this layer, and MAC (Media Access Control) addresses are used for device identification.
+3. Layer 3 - Network Layer: The Network Layer is responsible for routing data between different networks or subnets. It determines the optimal path for data packets to reach their destination across the entire network. Routers operate at this layer, and IP (Internet Protocol) addresses are used for logical addressing.
+4. Layer 4 - Transport Layer: The Transport Layer ensures reliable and orderly data delivery between two communicating devices. It manages end-to-end communication, segments data from the application layer into smaller packets, and handles flow control, error detection, and retransmission if necessary. TCP (Transmission Control Protocol) and UDP (User Datagram Protocol) are common protocols at this layer.
+5. Layer 5 - Session Layer: The Session Layer establishes, maintains, and terminates communication sessions between applications. It manages session synchronization and checkpoints, allowing data exchange to resume from the last checkpoint if the connection is lost.
+6. Layer 6 - Presentation Layer: The Presentation Layer handles data representation, encryption, and decryption for the application layer. It ensures that data exchanged between different systems is in a readable and understandable format, regardless of the differences in data formats used by the applications.
+7. Layer 7 - Application Layer: The Application Layer is the topmost layer of the OSI model and is responsible for providing network services directly to end-users or applications. It includes application protocols like HTTP (Hypertext Transfer Protocol), FTP (File Transfer Protocol), SMTP (Simple Mail Transfer Protocol), and more.
+
+-> The OSI model serves as a reference for understanding networking concepts and helps in the development and standardization of networking protocols. It provides a clear separation of concerns between different layers, enabling the development of modular and interoperable network systems. However, in practice, modern networking often follows the TCP/IP model, which is based on a subset of the OSI model and is widely used in the Internet and most networking implementations today.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+17. RAID: is a technology that is used to increase the performance and/or reliability of data storage. The abbreviation 
+    stands for either Redundant Array of Independent Drives or Redundant Array of Inexpensive Disks, which is older and less used. 
+-> A RAID system consists of two or more drives working in parallel. These can be hard discs, but there is a trend to also use the 
+   technology for SSD (Solid State Drives). There are different RAID levels, each optimized for a specific situation. 
+   These are not standardized by an industry group or standardization committee. This explains why companies sometimes come up with 
+   their own unique numbers and implementations. This article covers the following RAID levels:
+RAID 0 – striping
+RAID 1 – mirroring
+RAID 5 – striping with parity
+RAID 6 – striping with double parity
+RAID 10 – combining mirroring and striping
+
+Q. What is a level 0 backup? What is an incremental backup?
+-> An incremental backup copies only those blocks in a data file that change between backups. A level 0 incremental backup, 
+   which copies all blocks in the data file, is used as a starting point for an incremental backup strategy.
+-> A level 0 incremental backup, which is the base for subsequent incremental backups, copies all blocks containing data, 
+   backing the datafiles up into a backup set just as a full database backup.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Difference between Unix and Linux
+Features				Linux												Unix
+Basic Definition	Linux is an open-source operating system. 				Unix is a powerful and multitasking operating system that behaves like a bridge between the user and the computer.	 
+OS family			It belongs to the Unix-like family.						It belongs to the Unix family.
+Available in		It is available in multiple languages.					It is available in English.
+Kernel Type			It is monolithic.										It can be microkernel, monolithic, and hybrid.
+Written in			C and other programming languages.						C and assembly language.
+File system support	It supports more file systems than Unix.				It also supports less than Linux.
+Usage				It is used in several systems like desktop, smartphones, mainframes and servers.	Unix is majorly used on workstations and servers.
+Examples			Some examples of Linux are: Fedora, Debian, Red Hat, Ubuntu, Android, etc.		Some examples of unix are IBM AIX, Darwin, Solaris, HP-UX, macOS X, etc.
+Security			Linux provides higher security.								Unix is also highly secured.
+Price				Linux is free and its corporate support is available at a price.			Unix is not totally free. There are some Unix versions that are free, other than that UNIX is expensive.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+		CLI																GUI
+It stands for Command Line Interface.					It stands for Graphical User Interface.
+It is difficult to use.									It is easy to use.
+It consumes less memory.								It consumes more memory.
+It provides high precision.								It provides low precision.
+It is quick in comparison to GUI.						The speed of GUI is slower in comparison to CLI.
+The operating system of CLI required a keyboard only.	The operating system of GUI requires a mouse and a keyboard.
+The appearance can’t be modified.						Its appearance can be changed.
+An input can be entered at command prompt only.			Input can be entered anywhere on the screen.
+The information is presented to the user in the form of plain text and files.		The information is shown to the user in different forms, like text, videos, images, and so on.
+No menu is provided.									Menu is provided in GUI.
+No graphics are present in CLI.							Graphics are used in GUI.
+It doesn’t use any pointing devices.					GUI uses pointing devices to select and choose items
+It doesn’t help avoid spelling mistakes and typing errors				The spelling mistakes and typing errors can be avoided while using GUI.
+
+--------------------------------------------------------------------------------------------------------------
+Q. Reverse proxy?
+-> An example of a reverse proxy in action would be a company that has a website hosted on multiple web servers behind the firewall. 
+   The company wants to make sure that the website is highly available and can handle a large number of users. 
+   They also want to ensure that the website is secure and that all data transmitted between the user and the website is encrypted.
+
+-> In this scenario, the company would set up a reverse proxy server outside of the firewall. This server would be configured 
+   to handle all incoming traffic to the website. When a user connects to the website, their request is sent to the reverse 
+   proxy server, which then forwards the request to one of the web servers behind the firewall. The web server processes 
+   the request and sends the response back to the reverse proxy server, which then forwards the response to the user.
+
+-> The reverse proxy server can also handle tasks such as load balancing, caching, and SSL/TLS encryption. 
+   This means that the web servers behind the firewall do not have to worry about handling these tasks and can 
+   focus on processing requests and generating responses. It also improves the security of the website because sensitive 
+   information is not exposed to the internet directly.
+   
+   Linux Filesystem Hierarchy Standard (FHS)
+   -----------------------------------------
+** Linux Directories
+-> We have categorize the directories according to the type of file as given below:
+-> Directory type:				Types of files stored
+1. Binary directories: Contains binary or compiled source code files, eg, /bin, /sbin, etc.
+2. Configuration directories: Contains configuration files of the system, eg, /etc, /boot.
+3. Data directories: Stores data files, eg, /home, /root, etc.
+4. Memory directories: Stores device files which doesn't take up actual hard disk space, eg, /dev, /proc, /sys.
+5. Usr (Unix System Resources): Contains sharable, read only data, eg, /usr/bin, /usr/lib, etc.
+6. var (variable directory): Contains larger size data, eg, /var/log, /var/cache, etc.
+7. Non-standard directories: Directories which do not come under standard FHS, eg, lost+found, /run, etc.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q. Which difference have between public and private SSH key?
+-> private keys can be used for both encryption and decryption, while Public keys are used only for the 
+   purpose of encrypting the sensitive data. 
+-> Private keys are shared between the sender and the receiver, whereas public keys can be freely circulated among multiple users.
+
+Q. What is the name and the UID of the administrator user?
+-> A UID (user identifier) is a number assigned by Linux to each user on the system. This number is used to identify 
+   the user to the system and to determine which system resources the user can access. UID 0 (zero) is reserved for 
+   the root. UIDs 1–99 are reserved for other predefined accounts.
+Q. How do you get UID of a user?
+-> There are a couple of ways:
+1. Using the id command you can get the real and effective user and group IDs. id -u <username> If no username is supplied to id , it will default to the current user.
+2. Using the enviroment variable. echo $UID.
+
+Q. How to search for the string "my konfu is the best" in files of a directory recursively?
+-> grep -r "my konfu is the best" /path/to/directory
+   -r: recursively
+-> grep -r --include "*.txt" "my konfu is the best" /path/to/directory
+   If you want to search only in files with a certain file extension, you can use the --include option. For example, to search only in .txt files, you can use:
+   
+Q. How to get all environment variables and how can you use them?
+-> $$ env     command, such as PATH, HOME, USER, SHELL, etc.
+-> You can use environment variables in various ways in Linux, such as:
+1. Setting system-wide variables: Environment variables can be set globally on your system, and will be available to all users. 
+   This is typically done by editing the /etc/environment or /etc/profile file.
+2. Setting user-specific variables: You can set environment variables for specific users by editing their ~/.bashrc or ~/.bash_profile file.
+3. Using environment variables in shell scripts: You can use environment variables in shell scripts to store values 
+   or pass data between scripts. For example, you might use the PATH variable to specify the locations of executables that your script needs to run.
+4. Using environment variables in commands: Some commands use environment variables to customize their behavior. 
+   For example, the LANG variable can be used to set the language that a command displays its output in.
+
+Q. I get "command not found" when I run ifconfig -a. What can be wrong?
+-> It's possible that the ifconfig command is not installed on your system or is not in your system's PATH.
+
+Q. What is the difference between Telnet and SSH?
+-> Both Telnet and SSH are network protocols used for remote access to a computer system, 
+   but there are several key differences between them:
+1. Security: Telnet sends data (including login credentials) in clear text, which makes it 
+   vulnerable to interception and eavesdropping. SSH, on the other hand, encrypts all data sent 
+   between the client and server, providing a secure channel for remote access.
+2. Authentication: Telnet provides only password-based authentication, whereas SSH supports various 
+   authentication methods such as public key authentication, Kerberos, and smart card authentication.
+3. Port number: Telnet typically uses port number 23, while SSH uses port number 22.
+4. Features: SSH provides additional features such as file transfer, remote execution of commands, and X11 forwarding, which are not available in Telnet.
+-> Overall, SSH is considered to be a more secure and feature-rich protocol for remote access compared 
+   to Telnet, which is now rarely used due to its security vulnerabilities.
+
+Q. What is ICMP protocol? Why do you need to use?
+-> ICMP (Internet Control Message Protocol) is a network protocol used to send error messages and operational 
+   information about network conditions between devices in an IP (Internet Protocol) network. 
+-> It is primarily used by network devices such as routers and switches to communicate with each other and to 
+   report errors and network conditions to network administrators.
+-> ICMP provides a mechanism for reporting errors that occur during the transmission of IP packets, such as when 
+   a packet is lost or discarded, or when a destination host is unreachable. ICMP messages are also used for network 
+   diagnostics, including ping and traceroute utilities, which use ICMP echo requests and replies to measure network 
+   latency and to trace the route of packets between hosts.
+
+Q. What's a chroot jail?
+-> A chroot jail is a way to create a virtual environment on a Unix-like operating system, such as Linux or FreeBSD, 
+   that isolates a process and its children from the rest of the system.
+-> The term "chroot" stands for "change root" because the process being jailed is made to believe that the root 
+   directory of the file system is a different location than the actual root directory. This is achieved by creating 
+   a new file system tree within the existing file system and setting the root directory of the process to be the new file system's root.
+-> Chroot jails are commonly used for various purposes, such as testing software or isolating potentially unsafe applications, 
+   such as web servers or file transfer programs, from the rest of the system. By isolating these applications in a chroot jail, 
+   any potential security vulnerabilities or attacks can be contained within the jail, reducing the risk of damage to the system as a whole.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q. Describe the linux boot process with as much detail as possible, starting from when the system is powered on and ending when you get a prompt.
+-> The Linux boot process can be divided into several stages, each with its own set of tasks and processes. The following is a general overview of the Linux boot process:
+1. Power on and firmware initialization:
+-> When a Linux system is powered on, the firmware on the motherboard runs a Power-On Self Test (POST) to 
+   check the hardware for any issues. Once the hardware is initialized, the firmware reads the boot loader from 
+   the boot device, which is typically a hard disk or a solid-state drive (SSD).
+
+2. Boot loader:
+-> The boot loader is responsible for loading the Linux kernel into memory and passing control to it. 
+   The most common boot loader used in Linux systems is GRUB (GRand Unified Bootloader), although there 
+   are others such as LILO (Linux Loader). Once the boot loader is loaded, it presents a menu to the user 
+   (if configured to do so), allowing them to select which operating system or kernel to boot.
+   
+3. Kernel initialization:
+-> The Linux kernel is the core of the operating system and is responsible for managing the hardware and providing 
+   services to the user-space applications. Once the kernel is loaded, it performs several initialization tasks, 
+   such as detecting hardware, setting up the memory management, initializing the file system, and mounting the root file system.
+
+4. Initramfs (optional):
+-> If the system is configured to use an initramfs (initial RAM file system), it is loaded into memory next. 
+   The initramfs is a small, temporary file system that contains essential tools and drivers needed to mount 
+   the root file system, such as disk drivers, network drivers, and encryption tools.
+
+5. Init process:
+-> Once the root file system is mounted, the kernel starts the init process, which is the first user-space process
+   to run. The init process is responsible for starting all other processes and services on the system. The exact 
+   init process used can vary depending on the Linux distribution being used. In older versions of Linux, the init 
+   process was usually System V init (sysvinit), while in more recent versions, it may be systemd.
+
+6. Runlevels:
+-> The init process uses runlevels to manage the state of the system. A runlevel is a pre-defined set of services and 
+   processes that are started or stopped together. There are typically several runlevels defined, each with its own set 
+   of services and processes. For example, runlevel 3 is typically used for a text-based login prompt, while runlevel 5 is used for a graphical login prompt.
+
+7. Starting services:
+-> Once the runlevel is determined, the init process starts the services and processes associated with that runlevel. 
+   These services can include network services, file-sharing services, and other background processes. The order in which the 
+   services are started can be configured by the system administrator.
+
+8. Login prompt:
+-> Once all the services and processes are started, the system is ready to use. If the system is configured to provide a 
+   graphical login prompt, the user will be presented with a graphical interface to log in. If the system is 
+   configured for a text-based login prompt, the user will be presented with a command-line interface to log in.
+   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------  
+Q. What Are Linux Namespaces and What Are They Used for?
+-> When you’re running many different processes and applications on a single server, as is the case with deployment 
+   tools like Kubernetes, it’s important to have each process isolated, mostly for security.
+-> Namespaces achieve this isolation at a kernel level. Similar to how the application chroot works, which jails a 
+   process in a different root directory, namespaces separate other aspects of the system. 
+
+-> There are seven namespaces available:
+* Mount, or mnt: Very similar to chroot, the Mount namespace virtually partitions the file system. Processes running in 
+  separate mount namespaces cannot access files outside of their mount point. Because this is done at a kernel level, 
+  it’s much more secure than changing the root directory with chroot.
+* Process, or pid: In Linux, the first processes spawn as children of PID 1, which forms the root of the process tree. 
+  The process namespace cuts off a branch of the PID tree, and doesn’t allow access further up the branch. Processes in 
+  child namespaces will actually have multiple PIDs—the first one representing the global PID used by the main system, 
+  and the second PID representing the PID within the child process tree, which will restart from 1.
+* Interprocess Communication, or ipc: This namespace controls whether or not processes can talk directly to one another.
+* Network, or net: This namespace manages which network devices a process can see. However, this doesn’t automatically 
+  set up anything for you—you’ll still need to create virtual network devices, and manage the connection between global 
+  network interfaces and child network interfaces. Containerization software like Docker already has this figured out, 
+  and can manage networking for you.
+* User: This namespace allows process to have “virtual root” inside their own namespace, without having actual root access 
+  to the parent system. It also partitions off UID and GID information, so child namespaces can have their own user configurations.
+* UTS (UNIX Time Sharing): This namespace controls hostname and domain information, and allows processes to think 
+  they’re running on differently named servers.
+* Cgroup: is another kernel feature very similar to namespaces. Cgroups allow the system to define resource limits (CPU, 
+  memory, disk space, network traffic, etc.) to a group of processes. This is a useful feature for containerized apps, 
+  but it doesn’t do any kind of “information isolation” like namespaces would. The cgroup namespace is a separate thing, 
+  and only controls which cgroups a process can see, and does not assign it to a specific cgroup.
