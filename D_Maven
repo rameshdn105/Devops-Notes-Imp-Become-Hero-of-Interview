@@ -1,0 +1,322 @@
+What is Maven and Gradle used for?
+-> Both are able to cache dependencies locally and download them in parallel. As a library consumer, 
+   Maven allows one to override a dependency, but only by version. Gradle provides customizable dependency 
+   selection and substitution rules that can be declared once and handle unwanted dependencies project-wide.
+   Is Gradle better or Maven?
+   Gradle is between 7 and 85 times faster than Maven when building incremental changes; benefits increase with number of subprojects. 
+   Gradle builds are 3 to 30 times faster than Maven builds when task outputs can be resolved Gradle's build cache.
+
+Steps included in running an application
+
+Manually,
+1. Build the application ( maven, GCC )
+2. generating the artifacts ( .war , .jar , .zip )
+3. Stroing the artifacts ( Nexus, Gitlab, S3 bucket )
+4. Scan the artifacts ( SonarQube )
+5. Deploy into non-prod (dev and Qa) environments ( Ansible , chef , docker )
+6. testing ( loadtest, regression test, automation test )
+7. deploy to prod environments ( Ansible, chef , docker )
+8. tagging/versioning ( Nexus ) - optional
+
+Artifact: Set of instructions or dependencies, packaging, contain folder structure like .war , .jar , .zip
+
+What is the difference between JAR and WAR?
+JAR files have the .jar file extension, while WAR files have the .war extension. But, a WAR file is a specific type of a JAR file. 
+JAR files contain class files, libraries, resources and property files. WAR files contain servlets, JSP pages, HTML pages, JavaScript coding. 
+JAR files are used to archive a whole Java (desktop) application, while WAR files are used to deploy web applications.
+JAR: JaVa archive     war: Web archive
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+Maven:
+Maven is such a build management tool which can do all the things like adding dependencies, managing the classpath to project,
+generating war and jar file automatically and many other things. Maven can add all the dependencies required for the project 
+automatically by reading pom file.
+
+How Does the Maven Architecture Work?
+*The first step refers to configuring Maven, which is stored in a pom.xml.file
+*The POM file includes all of the configurations that Maven needs. The second step is to download the dependencies defined in pom.xml 
+ into the local repository from the central repository
+*After the user starts working in Maven, the tool provides various default settings, so there is no need to add every configuration in the pom.xml
+
+1. mvn clean: This command cleans the project by deleting the output directories (target directory by default) and any generated files. It ensures a clean build by removing any artifacts from previous builds.
+2. mvn compile: This command compiles the source code of the project. It compiles the Java classes and places the compiled bytecode files in the output directory (target/classes by default).
+3. mvn test: This command runs the unit tests for the project. It executes the test cases found in the src/test directory using a testing framework like JUnit. It generates test reports and provides feedback on test failures or errors.
+4. mvn package: This command creates a packaged artifact of the project. It typically generates a JAR file, WAR file, or another distribution format specified in the project's configuration. The packaged artifact is placed in the target directory.
+5. mvn install: This command installs the packaged artifact into the local Maven repository (~/.m2/repository by default). The artifact can then be used as a dependency in other projects on the same machine.
+6. mvn deploy: This command deploys the packaged artifact to a remote Maven repository. It requires additional configuration to specify the repository's location, credentials, etc. Deploying artifacts to a remote repository allows other developers to access and use them.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Maven Build Life Cycle (https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#:~:text=Maven%20is%20based%20around%20the%20central%20concept%20of,distributing%20a%20particular%20artifact%20%28project%29%20is%20clearly%20defined.)
+The Maven build life cycle is a sequence of steps that need to be followed in order to build a project, which eventually helps to execute goals. 
+
+The following are the phases of the build life cycle:
+*Validate: validate the project is correct and all necessary information is available
+*Compile: compile the source code of the project
+*Test: test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+*Package: take the compiled code and package it in its distributable format, such as a JAR.
+*Integration-test: runs integration test for projects
+*Verify: run any checks on results of integration tests to ensure quality criteria are met
+*Install: install the package into the local repository, for use as a dependency in other projects locally.
+*Deploy: done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+
+
+-> Here are the commands to run these lifecycle phases:
+mvn clean: Cleans the project by deleting the build output directory.
+mvn compile: Compiles the source code.
+mvn test: Runs unit tests.
+mvn package: Creates a JAR or WAR file.
+mvn verify: Executes integration tests and checks results.
+mvn install: Installs the package to the local repository.
+mvn deploy: Deploys the package to a remote repository.
+mvn site: Generates project documentation and reports.
+
+-> You can also execute specific goals without running the entire lifecycle. For example:
+
+mvn clean install: Cleans the project and then installs the package.
+mvn test-compile: Compiles test source code.
+Additionally, you can use -D to set properties during the build, like:
+
+mvn clean install -DskipTests: Skips running tests during the install phase.
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+There are three types of standard life cycles:
+
+1. Default: 
+The default or build life cycle is the primary cycle that is responsible for building the application. There are 21 different phases in this primary life cycle, starting from the process of validation to the step of deployment.
+
+2. Clean:
+The clean life cycle handles project cleaning. The clean phase consists of the following three steps: 
+
+Pre-clean
+Clean
+Post-clean
+The mvn post-clean command is used to invoke the clean lifestyle phases in Maven.
+
+3. Site:
+The Maven site plugin handles the project site's documentation, which is used to create reports, deploy sites, etc. 
+
+The phase has four different stages: 
+
+Pre-site
+Site 
+Post-site 
+Site-deploy 
+Ultimately, the site that is created contains the project report.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+Introduction to Maven
+In this section of the introduction to maven tutorial we will learn about the five primary and most significant concepts of Maven:
+
+*Project Object Model
+*Dependencies and repositories
+*Build life cycles, phases and goals
+*Build profiles
+*Build plugins
+
+1. Project Object Model (POM)
+Project Object Model (POM) refers to the XML files with all the information regarding project and configuration details
+It contains the project description, as well as details regarding the versioning and configuration management of the project
+The XML file is in the project home directory. Maven searches for the POM in the current directory when any given task needs to be executed
+POM.
+It is a fundamental unit of work in Maven. pom.xml file contains all configuration, dependencies, plugin integration and project setup instructions.
+This is the best way to add any library dependencies into your project. Copying .jar files into your project resource folder is a old way of doing it.
+Maven is based on Project Object Model (POM) and focuses on simplification and standardization of the building process.
+
+During the process, Maven takes care of the following elements:
+1) Builds
+2) Dependencies
+3) Reports 
+4) Distribution
+5) Releases
+6) Mailing list
+
+Maven pom.xml file with additional elements
+Here, we are going to add other elements in pom.xml file such as:
+
+Element	Description
+*packagig: defines packaging type such as jar, war etc.
+*name: defines name of the maven project.
+*url: defines url of the project.
+*dependencies: defines dependencies for this project.
+*dependency: defines a dependency. It is used inside dependencies.
+*scope: defines scope for this maven project. It can be compile, provided, runtime, test and system.
+
+2. Dependencies And Repositories
+Dependencies refer to the Java libraries required for the project. Repositories refer to the directories of packaged JAR files.
+If the dependencies are not present in your local repository, then Maven downloads them from a central repository and stores them in the local repository.
+repositories
+
+3. Build Life Cycles, Phases and Goals
+This consists of a sequence of build phases, and each build phase consists of a series of goals
+Each goal is responsible for a particular task
+When a process is executed, all purposes related to that phase and its plugins are also compiled
+lifecycles.
+
+4. Build Profiles
+This refers to the set of configuration values required to build a project using different configurations
+Different build profiles are added to the POM files when enabling different builds
+A build profile helps in customizing the build for different environments
+Buildprofiles.
+
+5. Build Plugins
+A Maven plugin refers to the group of goals that may or may not be in the same phase
+The plugins are used to perform a specific goal.
+Maven has its standard plugins that can be used. If desired, users can also implement their own in Java Buildplugins
+
+Features of Maven
+Apache Maven manages all the processes, like building, documentation, releasing, and distribution in project management.
+
+*The tool simplifies the way of project building by increasing the performance of the project and the building process
+*The task of downloading dependencies and JAR files is automated
+*Maven provides easy access to all necessary information
+*Maven makes it simple for the developer to build a project in different environments without worrying about the dependencies, processes, etc.
+*In Maven, it is simple to add new dependencies—you only have to write the dependency code in the POM file
+
+----------------------------------------------------------------------------------------------------------------------
+What Is a Maven/Non Bare Repository?  
+Maven repositories refer to the directories of packaged JAR files that contain metadata. The metadata refers to the POM 
+files relevant to each project. This metadata is what enables Maven to download dependencies.
+
+There are three types of repositories:
+
+1. Local Repository:
+Local repository refers to the developer’s machine, which is where all the project material is saved. 
+This repository contains all the dependency jars.
+
+2. Remote Repository:
+The remote repository refers to the repository present on a web server, which is used when Maven needs 
+to download dependencies. This repository works the same as the central repository. 
+Whenever anything is required from the remote repository, it is first downloaded to the local repository, and then used.
+
+3. Central Repository:
+Central repository refers to the Maven community that comes into action when there is a need for dependencies, 
+and those dependencies cannot be found in the local repository. Maven downloads the dependencies from here whenever needed.
+
+------------------------------------------------------------------------------------------------------------------------------------
+What Is a Build Tool?
+A build tool is essential for the process of building, as these are the tools that automate the process of creating applications 
+from the source code. The build tool compiles and packages the code into an executable form.
+
+A build tool does the following tasks:
+*Generates source code
+*Generates documentation from the source code
+*Compiles source code
+*Packages the compiled codes into JAR files
+*Installs the packaged code in the local repository, server, or central repository
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Maven Available Plugins
+Maven is - at its heart - a plugin execution framework; all work is done by plugins. Looking for a specific goal to execute? 
+This page lists the core plugins and others. There are the build and the reporting plugins:
+*Build plugins will be executed during the build and they should be configured in the <build/> element from the POM.
+*Reporting plugins will be executed during the site generation and they should be configured in the <reporting/> element from the POM. 
+Because the result of a Reporting plugin is part of the generated site, Reporting plugins should be both internationalized and localized. 
+You can read more about the localization of our plugins and how you can help.
+
+Supported By The Maven Project
+To see the most up-to-date list browse the Maven repository, specifically the org/apache/maven/plugins subfolder. 
+(Plugins are organized according to a directory structure that resembles the standard Java package naming convention)
+
+Core plugin: install, compiler, clean, deploy, filsafe, site, resources, surefire, verifier
+Packaging tools: ear, war, jar, rar, ejb, sade, source, jmod
+Reporting plugis: changelog, changes, checkstyle, doap, docck, javadoc, jdeps, jxr, pmd
+Tools: antrum, artifact, arechetype, dependency, enforcer, gpg, help, invoker, patch, pdf, plugin, release, scm, scripting, stage, toolchains, wrapper.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q #1) How does Jenkins work with Maven?
+Answer: Jenkins works well with Maven by following certain preconditions. We need to set up Java and Maven paths in Jenkins. Then we need to create the Jenkins jobs with all the parameters including Post Build Actions, scheduling the builds, and so on.
+
+Q #2) What are Maven and Jenkins?
+Answer: Maven is a project management and builds tool developed in Java. Jenkins is a continuous integration tool that is open source. Both Maven and Jenkins are widely used in the industry nowadays.
+
+Q #3) What is the Maven goal in Jenkins?
+Answer: We provide the Maven commands inside the Goals section of Jenkins. This is a key step while creating a Jenkins job.
+
+Q #4) Why do we use Maven?
+Answer: Maven is a project management and build tool that is driven by a pom.xml file. It has made the build process simple, easy, and consistent.
+
+Q #5) Is Maven a CI Tool?
+Answer: No, Maven is not a continuous Integration tool. It is a build tool having more features than Ant. Jenkins is a continuous integration tool.
+
+Q #6) What is pom xml in Maven?
+Answer: Project Object Model or pom is an xml file that forms the core of Maven. It contains the list of project dependencies, configurations, profiles, and so on.
+
+Q #7) Can we integrate TestNG and Jenkins with Maven?
+Answer: Yes, we can integrate TestNG and Jenkins with Maven. All these are achieved with the help of plugins.
+
+Q #8) What are the three builds of the Maven life cycle?
+Answer: The three standard builds of the Maven cycle are listed below.
+Default
+Clean
+Site
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+Differences between Maven and Ant :
+ 																										Maven							Ant
+Definition	It is a framework based on the concept of POM.					It is a Java library and command-line toolbox.
+Convention	It has built-in conventions to place source code, compiled code, etc.		It does not have any formal conventions.
+Project structure Info	It does not require information about the project structure 		It requires information on the project structure to be 
+		to be provided in the pom.xml file.						provided in the build.xml file.						
+Lifecycle	It has a lifecycle.								It does not have a lifecycle.
+Nature		It is declarative in nature 							It is procedural in nature (manually tell exactly what to do and when to do it).
+		(only source should be present in the default directory).	
+Dependency	It can self download the dependencies from a central repository 		It has no built-in support for dependency management.
+		for building projects.	 
+Reusability	It consists of reusable plugins.						It consists of scripts that are not reusable.
+Preference	It is less preferred.								It is more preferred.
+Complexity	It is more complex.								It is simple and reliable. 
+Flexibility	It is less flexible and maintainable.						It is more flexible and maintainable.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What are the build steps while deploying applications
+-> The deployment process flow consists of 5 steps: Planning, development, testing, deploying, and monitoring.
+
+Q. how you buid the applicaiton ?
+-> Building an application involves compiling the source code and generating the application binaries. 
+   The exact process for building an application will depend on the programming language, framework, and tools that are being used.
+1. Checkout source code: The source code for the application is retrieved from a source code repository, such as Git.
+2. Install dependencies: Any dependencies required by the application, such as libraries or frameworks, are installed.
+3. Compile the code: The source code is compiled into executable binaries, using a compiler or build tool, such as GCC or Gradle.
+4. Package the application: The compiled binaries are packaged into a format that can be deployed, such as a JAR file for Java 
+   applications or an APK file for Android applications.
+5. Run tests: Automated tests are run to ensure that the application is functioning as expected.
+6. Create an artifact: The packaged application is stored as an artifact, which can be deployed in a production or staging environment.
+
+-> artifact: maven, jenkins
+Jenkins: Jfrog
+maven: target folder
+
+How to skip maven build test?
+command: mvn install -DskipTests
+-DskipTest=true
+
+Q. What is the reasons to build failure in jenkins?
+Ans: 3 reasons
+1) Normally build failure occurs due to diff in the versions if we are integrating
+maven project if the default version of maven installed in master or worker node is
+different from the maven version in the jenkins server page then we get build failure.
+2) One more reason in case of plugins. Plugins should be installed correctly.
+3) We can get build failure if the pom file not found.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+-> SonarCloud is a cloud-based code analysis platform that helps developers improve the quality and maintainability of their code. While SonarCloud provides several features for code analysis, it does not specifically perform testing.
+*  Here are some of the primary features and capabilities of SonarCloud:
+1. Static Code Analysis: SonarCloud analyzes source code to identify potential bugs, code smells, vulnerabilities, and security issues. It examines the codebase for patterns and violations of best practices.
+2. Code Quality Metrics: It provides a range of code quality metrics such as code duplication, complexity, and maintainability index. These metrics help developers understand the overall health of their codebase and identify areas for improvement.
+3. Security Vulnerability Detection: It can detect security vulnerabilities and issues in the code, such as potential injection attacks, cross-site scripting (XSS), or insecure configuration.
+4. Integration with Continuous Integration/Continuous Deployment (CI/CD) Pipelines: SonarCloud integrates with popular CI/CD tools like Jenkins, Azure DevOps, and GitHub Actions. It can be configured to automatically analyze code on every build or pull request, providing feedback and highlighting issues early in the development process.
+5. Code Coverage: The percentage of code that is exercised by automated tests. 
+-> This metric helps developers ensure that their tests adequately cover the codebase.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
