@@ -1,0 +1,265 @@
+
+*  DevOps is a software development process that emphasizes the time-saving benefits of continuous integration, deployment, and measurement. 
+   It's a cultural and professional movement that seeks to optimize the flow of work between software developers and IT operations to create 
+   high-quality applications faster.
+-> DevOps is a set of principles that enable organizations to automate services, push features out quickly to customers and 
+   resolve issues faster than ever before.
+
+*DevOps Lifecycle is a methodology software development teams use to bring products to market more quickly and efficiently. 
+ It's a way of managing the entire software lifecycle from development through release, focusing on collaboration between 
+ developers and IT operations professionals. 
+
+1.Plan – pi program increment, sprint 15 days jira , azure boards
+2.Code – git, github, gitlab, bitbucket, Mercurial, Subversion, Perforce, Bazaar, Sourcesafe
+3.Build – maven, gradle, ant
+  Python (build is not required)
+4.Test – Junit, Selenium
+5.Release- Nexus, Jenkins, Azure
+  Artifact- jfrog, azure artefact
+6.Deploy – Ansible, Chef, Puppet
+7.Operate – cloud, AWS, Azure, GCP
+  Orchestration k8s ,docker swarm
+8.Monitor: Prometheus, Grafana, and Elasticsearch
+
+1)Plan -Program increment, scrum master will decide daily activity.
+  Professionals determine the commercial need and gather end-user opinions throughout this level. In this step, they 
+  design a project plan to optimize business impact and produce the intended result.                          
+  Tool : Jira, Azure boards
+
+2)Code - During this point, the code is being developed. To simplify the design process, the developer team employ lifecycle 
+  DevOps tools and extensions like Git that assist them in preventing safety problems and bad coding standards. 
+  Tools: Git, Github, Gitlab, Bitbucket, Perforce
+
+3)Build - After programmers have completed their task, they use tools such as Maven and Gradle to submit the code to the common code source.
+  Tools: Maven(Java), Graddle(C & C++), Ant(C+, .net)
+
+4)Test - To assure software integrity, the product is first delivered to the test platform to execute various sorts of screening such as user 
+  acceptability testing, safety testing, integration checking, speed testing, and so on, utilizing 
+  tools such as JUnit(Preferred), Selenium, etc.   (Maven can do testing but everytime it build it as to do)
+
+5)Release - At this point, the build is prepared to be deployed in the operational environment. The DevOps department prepares updates or 
+  sends several versions to production when the build satisfies all checks based on the organizational demands.  
+  Tools: Nexus, Jenkins, Azure, XL Release, Clarive.
+
+6)Deploy - At this point, Infrastructure-as-Code assists in creating the operational infrastructure and subsequently publishes the build 
+  using various DevOps lifecycle tools. Tools: Ansible, Chef, Puppet
+
+7)Operate - This version is now convenient for users to utilize. With tools including Chef, the management department take care of 
+  server configuration and deployment at this point. 
+  Tools: Cloud(3types: cloud, AWS, GCP), Orchestration tool: Kubernetes, Docker swarm, Apache mesos
+
+8)Monitor - The DevOps workflow is observed at this level depending on data gathered from consumer behavior, application efficiency, 
+  and other sources. The ability to observe the complete surroundings aids teams in identifying bottlenecks affecting the production and 
+  operations teams' performance. 
+  Tools: Monitor graphana pramathesis azure, Ngios, splunk
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. The roles and responsibilities of a DevOps engineer: can vary depending on the specific organization and project, but generally, 
+   they involve a combination of software development and IT operations.
+
+1. Automating infrastructure and application deployment: DevOps engineers are responsible for automating the deployment of 
+   infrastructure and applications. They use tools such as Ansible, Chef, Puppet, and Terraform to provision and configure servers and services.
+2. Building and maintaining CI/CD pipelines: DevOps engineers are responsible for building and maintaining the continuous 
+   integration and continuous delivery (CI/CD) pipelines. This includes setting up and configuring build servers, test runners, and deployment tools.
+3. Monitoring and troubleshooting: DevOps engineers are responsible for monitoring the performance and availability of 
+   applications and infrastructure. They use tools such as Prometheus, Grafana, and Elasticsearch to collect and analyze metrics and logs.
+4. Managing cloud infrastructure: DevOps engineers are responsible for managing and provisioning cloud infrastructure, 
+   such as AWS, Azure, and GCP. They use cloud-specific tools and APIs to automate the deployment and scaling of resources.
+5. Collaborating with development and operations teams: DevOps engineers work closely with development and operations 
+   teams to ensure that code is deployed in a timely and efficient manner. They also help to bridge the gap between 
+   development and operations by promoting collaboration and communication.
+6. Security: DevOps engineers are responsible for ensuring that the infrastructure and applications are secure. 
+   They use tools such as SELinux, AppArmor, and FirewallD to secure the systems and applications.
+7. Managing containerized environments: DevOps engineers are responsible for managing containerized environments, 
+   such as Docker and Kubernetes. They use container orchestration tools to deploy, scale, and manage containerized applications.
+
+-> Overall, a DevOps Engineer is responsible for the planning, building, testing, and deployment of software and infrastructure, 
+   and ensuring that the systems are reliable, scalable and secure.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. How many environment we have?
+-> The number of environments in software development can vary depending on the organization, project, and development process. 
+   However, common environment types include:
+1. Development environment: used by developers to test and debug code.
+2. Testing environment: used to perform functional, integration, and performance testing.
+3. Staging environment: used to replicate a production environment for final testing before deployment.
+4. Production environment: the live environment where the application is deployed for end-users.
+-> Some organizations may also have additional environments, such as a UAT (User Acceptance Testing) environment, 
+   a Pre-Production environment, or a Disaster Recovery environment. The number and type of environments can vary 
+   based on the size and complexity of the project and the needs of the organization.
+   
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Parameter				DevOps																			                                                Agile
+Definition			DevOps is a practice of bringing development and 				            	Agile refers to the continuous iterative approach, which 
+                    operation teams together.										                    	focuses on collaboration, customer feedback, small, and rapid releases.
+Purpose		    	DevOps purpose is to manage end to end engineering processes.		        	The agile purpose is to manage complex projects.
+Task		      	It focuses on constant testing and delivery.						            	It focuses on constant changes.
+Team size		    It has a large team size as it involves all the stack holders.		  	It has a small team size. As smaller is the team, the fewer people work on it so that they can move faster.
+Team skillset	  The DevOps divides and spreads the skill set between 				        	The Agile development emphasizes training all team members to 
+                development and the operation team.									                    	have a wide variety of similar and equal skills.
+Implementation	DevOps is focused on collaboration, so it does not 					        	Agile can implement within a range of tactical frameworks 
+				        have any commonly accepted framework.									                  such as safe, scrum, and sprint.
+Duration	    	The ideal goal is to deliver the code to production daily 			    	Agile development is managed in units of sprints. 
+			          	or every few hours.													                          	So this time is much less than a month for each sprint.
+Target areas	  End to End business solution and fast delivery.						              	Software development.
+Feedback		    Feedback comes from the internal team.								              	In Agile, feedback is coming from the customer.
+Shift left principle	It supports both variations left and right.					          	It supports only shift left.
+Focus			DevOps focuses on operational and business readiness.				              	Agile focuses on functional and non-functional readiness.
+Importance	  	In DevOps, developing, testing, and implementation all are            Developing software is inherent to Agile.
+                   equally important.                 
+Quality			    DevOps contributes to creating better quality with automation and     The Agile produces better applications suites with the desired requirements. 
+                   early bug removal. 
+				        Developers need to follow Coding and best Architectural practices      It can quickly adapt according to the changes made on time during the project life.
+                    to maintain quality standards.
+Tools			      Puppet, Chef, AWS, Ansible, and team City OpenStack are               Bugzilla, Kanboard, JIRA are some popular Agile tools.
+                   popular DevOps tools.		
+Automation	  	Automation is the primary goal of DevOps. 									        	Agile does not emphasize on the automation.
+                It works on the principle of maximizing efficiency when deploying software.	
+Communication	   DevOps communication involves specs and design documents. 						  Scrum is the most common method of implementing Agile software development. 
+				        It is essential for the operational team to fully understand the 				Scrum meeting is carried out daily.
+				            software release and its network implications for the enough
+                    running the deployment process.	
+Documentation	  The process documentation is foremost because                          The agile method gives priority to the working system over complete documentation.
+				      it will send the software to an operational team for deployment. 	              
+				      However, in the development of sophisticated software, 				            It is ideal when you are flexible and responsive. However, 
+			    Automation minimizes the impact of insufficient documentation. 		      	it can harm when you are trying to turn things over to another team for deployment.
+				it's difficult to transfer all the knowledge required. 
+				
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Scrum master: sprint, project plan, 
+6yrs project: project is big
+team strngth (10/5): 5 devops working on diff modules
+devops engineer: mediator
+developer: writes code
+sprint: montly plan, weekly plan, dashboard with all teammates:work related things, no backlogs should be there
+Kt: knowledge transfer, through person, vid, journal, 
+technical lead:
+
+-> I am working as DevOps Engineer from past 5 years. I have good experience in working on Linux,Shell Scripting,
+   Version Control tool like git, github, build tools like Maven and ant for java, Bug tracking / ticketing tool like Jira,  
+   Continous Integration tool jenkins,  Containerisation tool like docker and orchestration tool like kubernetes,
+   Configuration Management tool like Ansible, Deployment tool apache tomcat ,nginx
+-> I have also good experience workng in cloud Environment like AWS, all our infrastructure is there in aws i have worked on several 
+   services in aws like ec2, Vpc, IAM, lambda, route 53, Secrets manger, Loadbalancers, EBS ,EFS, KMS and cloudwatch for monitoring etc 
+-> I take care of writing scripts for manual and repititive task, whenerever automation is necessary. I will write a shell script and 
+   automate that process, I have written several scripts for example buid script for automating build process, Deployment script for 
+   automating deployement process, backup script to take reglar backup of important files and folders etc .
+-> I take care of Jenkins create jobs in jenkins install plugins and schedule nightly and weekly builds using cronjobs 
+-> I have also set up Jenkins master and slave, we have dedicated slaves for separate code base with label so multiple slaves are 
+   there for build process and for high availability 
+-> I work on deployments, Deploying the build tool, QA UAT and production environment, this also automated using jenkins 
+-> I have worked on release activities we have releases every month i.e., 2 week sprint, At the time of release we need to create 
+   branch, merge the branches and resolve merge conflicts with help of developement team and once everything is fine we will create 
+   the CR(change request) window and we deploy the artifact in production.
+-> I take care build issues as well if any build fails i will debug the issue and identify why the build is failed if there is any 
+   complilation issue i will work with developement team and fix the issue.
+-> If there is enviroment issue like CPU is full or RAM is occupied or Disk is full then we will fix that within our team 
+-> I have written ansible scripts for automating the deployment process that stops the tomcat server takes the backup of existing war file 
+   and copy the new file into apache tomcat webapps folder and start the tomcat service and also i have written playbook for taking the 
+   backup from several machines and storing it in bastion server 
+-> I have also automated all the tools installation like kubernetes, Jenkins and docker using ansible playbook, So whenever you need to install 
+   jenkins or Kubernetes you need triger the playbook. 
+-> I have written dockerfiles for several multiple use cases like installing tomcat, build tools like maven etc and i have also have an experience 
+   in installing the docker and maintaining and debigging docker images 
+-> I have good experience in installation and configuration of kubernetes, I have installed high available cluster which has 3 master and 40 worker 
+   nodes segragated namespace for every tool and i have also written deployment files for installing several tools in kubernetes.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## My roles and responsibilities are 
+-> I am fully responsible for planning and bringing up new servers that are required to set up new CI/CD flow. 
+   will collect all details like type of code used with versions, build tool used, code quality standards,deployment env, etc
+-> we get jira stories get assigned to automate manual and repetitve tasks and we work on that.
+-> we have everyday stand up call with TL to update and discuss about our tasks and any blockers if present to get help from teammates.
+-> In addition to that any existing  production pipelines failure happens will be debugging immediately.
+-> I also train new joinees about the project, tools and workflow we follow.
+
+Day to Day activities for a DevOps Engineer:
+Daily stand up call: daily tasks, if any bugs why happened and how to resolve any botlenecks and ho to resolve them.
+1. Make sure that the pipeline is running smoothly – This is one of the most important task of a DevOps engineer to make sure that CI/CD 
+   pipeline is intact and fixing any issue or failure with it is the #1 priority for the day. They often need to spend time on troubleshooting, 
+   analysing and providing fixes to issues.
+2. Interaction with other teams – Co-ordination and collaboration is the key for DevOps to be successful and hence daily integration with Dev 
+   and QA team, Program management, IT is always required.
+3. Work on Automation Backlog – Automation is soul of DevOps so DevOps engineering need to plan it out and I can see DevOps engineer spending lots 
+  of time behind the keyboard working on Automating stuff on daily basis.
+4. Infrastructure Management – for maintaining and managing the infrastructure required for CI/CD pipeline 
+   and making sure that its up and running and being used optimally is also part of their daily schedule. 
+   Ex. Working on Backup, High Availability, New Platform setup etc.
+5. Dealing with Legacy stuff – Not everyone is lucky to work on latest and newest things and DevOps engineers are no exception hence they also 
+   need to spend time on legacy i.e. in terms of supporting it or migrating to the latest.
+6. Exploration – DevOps leverage a lot from the various tools which are available, there are many options as open source so team need to regularly 
+   check on this to make sure the adoptions as required, this is something which also require some effort not on daily but regular basis. 
+   Ex. What are open source options available to keep the cost at minimum?
+7. Removing bottleneck – DevOps primary purpose is identify the bottlenecks / Manual handshakes and work with everyone involved 
+   (Dev / QA and all other stakeholder) to remove them so team spend good amount of time in finding such things and build the Automation    
+    Backlog using this. Ex. How we can get builds faster?
+8. Documentation – Though Agile / DevOps stresses less on the documentation, it is still the important one which DevOps engineer does on 
+   daily basis, Be it Server Information, Daily Week charted, Scrum / Kanban board or Simple steps to configure / backup or modify the 
+   infrastructure, you need to spent good amount of time in coming up these artifacts.
+9. Training and Self Development – Self leaning and Training is very useful in getting better understanding and many organisations encourage 
+   their employee to take the time out and do some of these and same holds true for DevOps folks as well, So learn something new everyday...
+10. Continuous Improvement as Practice – Last but not least, It’s up to the DevOps folks to build awareness on the potential of CI/CD 
+    and DevOps practices and building a culture of leveraging it for doing things better, reducing re-work, increasing the productivity and 
+	optimising the use of existing resources. Go and talk to people to build the DevOps and Continuous Improvement culture...
+	
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+Scenario 1:
+Q) What is the Challenging job in jenkins?
+Ans: When I have installed Jenkins in first time in my server, after some time server failed, at that time we could not able to recover jenkins.
+     So i have searched for high availability of plugin and we found gearman plugin and installed it.
+	 
+Scenario 2:	 
+	Provisioned jenkins server to execute test cases on cloud. we asked testing team to run the code in 
+	headless mode(no ui interaction), i installed chrome driver on linux server but it was not able to start
+    the issue was i didnt give execute permission to chrome binary, 
+	error--> no chrome binary found  (chmod ug+x )
+
+
+Scenario 3:how i contributed as a devops engineer
+-> There was no static code analysis: (how good code is, code coverage is good?, how many lines, how many bugs, how many vulnerabalities?)
+-> Sonarqube: install all sonar packages in linux machne then its a sonarqube, but in sonarcloud u just have to login to get access of testing environment.
+
+Q. do one ci project --Integration of a github repo into sonarcloud.
+-> there was no static code anyalysis in my clients project i took the initiative explained them by doing a 
+   POC(proof of concept)after they agreed to include i choose sonarcloud and integrated 
+   CI using github actions and sonarcloud.
+	
+-> In my project when i joined there was not static code analysis implemented, developers were just pushig the codes
+and there were lot of bugs and vulneralabilities.
+ so I took initialiation and i did a poc and explained how sonarqube and sonarcloud will provide these solution.
+ i took responsibility of setting up sonarcloud license for my cient and integrated all repositories into sonarcloud so that developers can check ow good there code is.
+ 
+ 
+POC:Proof of concept
+-> a demonstration or experiment that shows the feasibility or practicality of a concept or idea. 
+   It is a way to validate and test a hypothesis or innovation before investing significant time and 
+   resources into it. POCs are commonly used in business, technology, and scientific fields to assess 
+   the potential of new ideas or solutions. 
+-> The goal of a POC is to provide evidence that a concept or idea can be successfully implemented
+   in a real-world scenario. POCs are often used to persuade stakeholders or investors to support a 
+   new project or initiative.
+   
+--------------------------------------------------------------------------------------------------------------------
+github action:
+
+** after unit testing sonarqube testing will be happening.
+-> Sonarqube: SonarQube is a tool for static code analysis, which means it analyzes the code without 
+   executing it. It can identify code smells, bugs, vulnerabilities, and other issues in the codebase. 
+-> SonarQube provides detailed reports on the quality of the code and can be integrated with the continuous 
+   integration (CI) process to ensure that issues are caught early in the development cycle.
+   
+-> Selenium: It is a tool for automated testing of web applications. It simulates user interaction with 
+   the application in a real browser and can verify that the application is working as expected. 
+-> Selenium tests can be run as part of a CI process to ensure that the application is functioning correctly with each new release.
+
+
+-> Quality profiles and quality gates:
+1. A quality profile is a set of predefined rules that define the coding standards and best practices for a specific programming
+   language or technology. It helps developers write better code by providing guidelines and feedback on code quality and maintainability. 
+2. A quality gate is a set of conditions that must be met before a software product can be released. It ensures that the software meets 
+   certain quality criteria, such as performance, security, and maintainability. 
+-> Quality gates are typically set up as part of the continuous integration and delivery process, and can help prevent
+   defects and improve overall software quality.
+   
+jenkins: wait for quality gate
+-> if codes are ood the it will go to next step.
