@@ -1,8 +1,6 @@
 # Devops-Notes-Imp-Become-Hero-of-Interview
-<<<<<<< HEAD
-A quick review of some key DevOps topics that are often relevant in interviews
 
-## Topic 1: Introduction to Devops
+A quick review of some key DevOps topics that are often relevant in interviews
 
 =======
 A quick review of some key DevOps topics that are often relevant in interviews.
@@ -18,4 +16,3 @@ For better understanding go as per numbers provided:
 8. D_Terraform
 9. D_Docker
 10. D_Kubernetes
->>>>>>> 0c3cca4352e57e5014c3f7e7688df9148fb0fa21
