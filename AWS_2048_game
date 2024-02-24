@@ -1,0 +1,66 @@
+To deploy 2048 game using AWS: followed Abhishek veeramalla session
+
+
+To run all commands below u shoud have AWS CLI, kubctl CLI, EKSCTL and Helm installed in same directory (C:\Program Files\Amazon) and directory path should be added in 'path' (thisPC-properties-advanced settings-Advance-Envronment variables-path-newpath-C:\Program Files\Amazon)
+
+Main two files: 
+1. one is yaml file(name space creation, deployment, service, networking ingress) https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+2. Policies define in jason: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json
+
+EKS cluster: 
+1. Created cluster demo-cluster: $ eksctl create cluster --name demo-cluster --region ap-south-1 --fargate
+
+2. $ aws eks update-kubeconfig --name demo-cluster --region ap-south-1
+    - Added new context arn:aws:eks:ap-south-1:827813820069:cluster/demo-cluster to C:\Users\user\.kube\config
+
+3. Create Fargate profile
+    $ eksctl create fargateprofile \
+    --cluster demo-cluster \
+    --region us-east-1 \
+    --name alb-sample-app \
+    --namespace game-2048
+ -> Along with system create frgate profile, we are creating above defined fargate profile i.e, alb-sample-app. 
+
+4. Deploy the deployment, service and Ingress: $ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/examples/2048/2048_full.yaml
+  namespace/game-2048 created
+deployment.apps/deployment-2048 created
+service/service-2048 created  (It has created ith no Externa Ip: that means anyone within AWS vpc they ca n communcate with it using noeport, but our goal is to make it accessible by outside) 
+ingress.networking.k8s.io/ingress-2048 created (Ingress created with port but no addres, as their is no ingress controller or loablaancer so that outsder can use it to access our application)
+
+5. configure IAM OIDC provider: before ALB cotroller(K8s pod) add on we should configure AWS IAM OIDC bcz ALB controller needs to access the application load blancer. (Pods will communicate to services using IAM OIDC)
+ $ eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve
+
+6. How to setup alb add on
+-> AL B controller is nothing but it is a pod, which requires access to AWS services such as ALB (For this it as to talk to the aPI)
+ $ curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.5.4/docs/install/iam_policy.json   
+Provies all policies provie in above jsn policy: Followed by aLB controller docs if any change they will provide you.
+-> Create IAM Policy
+aws iam create-policy \
+    --policy-name AWSLoadBalancerControllerIAMPolicy \
+    --policy-document file://iam_policy.json
+-> Create IAM Role: these service accounts will be used for our application depending on  the requirement. (Accordingly they will provide roles)
+ eksctl create iamserviceaccount \    
+  --cluster=<your-cluster-name> \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name AmazonEKSLoadBalancerControllerRole \
+  --attach-policy-arn=arn:aws:iam::<your-aws-account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+7. Deploy ALB controller: 
+  a. Add helm repo: $ helm repo add eks https://aws.github.io/eks-charts
+  b. Update the repo: $ helm repo update eks
+  c. Istall: $ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \            
+  -n kube-system \
+  --set clusterName=demo-cluster \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set region=ap-south-1 \
+  --set vpcId=vpc-0819a9242fd603715 
+-> AWS LB controlle create and it has atleast 2 replicas (2 replicas will be one in each availability zones and continuously watch for igress resources)
+-> $ kubectl get deployment -n kube-system aws-load-balancer-controller
+-> Ingress controlller has created load balancer by seeeing ingress resource
+
+8. eksctl delete cluster --name demo-cluster --region us-east-1
+
+Overall: create pod, deployment, services, ingress, igress controller (Ingress controller is created one time)
