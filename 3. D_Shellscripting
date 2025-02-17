@@ -1,19 +1,20 @@
 SHELL SCRIPTING
--> Any file where you put series of linux commands that can be called as shell script.
+-> Any file where you put series of Linux commands that can be called as shell script.
 
 With logics and conditions.
--Shell script has an extention .sh
+-Shell script has an extention ".sh"
 -Shell script is used to automate the manual and repetitive tasks.
 
-SHELL: Shell interacts as a interface between user and kernel(linux OS)
+SHELL: Shell interacts as a interface between user and kernel (linux OS)
 Shebang:
 #!/bin/bash---we call it as shebang- which invokes bash shell. If we don’t use this it uses default shell.
 To check the available shells- cat /etc/shells
 To check default shell:   echo $SHELL
-#!/bin/bash   set -x : debuging code
+#!/bin/bash   set -x : debugging code
 
-Q. If you dont use shebang what happns?
--> If you don't use the shebang (also known as hashbang) at the beginning of a shell script, the script may not execute as expected. The shebang is a special sequence of characters that tells the system which interpreter should be used to execute the script. In the case of shell scripts, the shebang typically specifies the path to the shell interpreter.
+Q. If you don't use shebang what happens?
+-> If you don't use the shebang (also known as hashbang) at the beginning of a shell script, the script may not execute as expected. 
+-> The shebang is a special sequence of characters that tells the system which interpreter should be used to execute the script. In the case of shell scripts, the shebang typically specifies the path to the shell interpreter.
 -> For example, a common shebang for a Bash script is #!/bin/bash, indicating that the script should be interpreted using the Bash shell.
 -> Here's what can happen if you omit the shebang:
 1. The script may not execute: Without the shebang, the system won't know which interpreter to use for executing the script. Depending on the configuration of the system, you might encounter an error like "command not found" or "permission denied" when trying to execute the script directly.
@@ -35,7 +36,7 @@ echo "The result is $result"
 
 Q. super block in shell script?
 -> Superblock: It is a record of the characteristics of a filesystem. It includes information about size, block size, 
-   empty and the filled blocks. Linux also maintains a copy of its superblock< in memory. If you are unable to mount 
+   empty and the filled blocks. Linux also maintains a copy of its superblock in memory. If you are unable to mount 
    your device, this can be due to a Corrupted superblock.
    
 ---------------------------------------------------------------------------------------------------------------------
@@ -52,7 +53,7 @@ uname -a
 Give execute permission to a file. Sudo chmod 777 filename
 To run a shell script file  ./sample.sh
 
-Arguments :- some statements or strings or numbers etc which are passed along with the script.
+1. Arguments :- some statements or strings or numbers etc which are passed along with the script.
 Example
 ./sample.sh  shreeni 34 bangalore—3 arguments , separated by space
 How to read arguments inside the shell script?
@@ -72,7 +73,8 @@ echo “I am aged $2”
 echo “I am from $3”
 to run this     ./arguments.sh shreeni 31 Bangalore
 
-Variables
+
+2. Variables
 Are used to assign a value to a keyword.
 Example3
  Variables.sh
@@ -241,7 +243,7 @@ fi
 
 ______________________________________________
 
-WHILE LOOP: It is used to run a set of commands repeatedly until some ondition occurs.
+WHILE LOOP: It is used to run a set of commands repeatedly until some condition occurs.
 
 Syntax:
 _________________
@@ -601,9 +603,8 @@ reversed_string="$reversed_string${str:$i:1}"
 done
 echo "$reversed_string"
 
-Some real time scenarios:
 ----------------------------------------------------------------------------------------------------
-1. Automated data backups: A shell script can be created to automate the process of backing up data, 
+1. Automated data backups to S3: A shell script can be created to automate the process of backing up data, 
    such as databases or important files. This script can be scheduled to run regularly using a cron job. 
    The script can compress the data and transfer it to a remote server or backup location. 
    Here's an example of a backup script using the tar command:
@@ -617,6 +618,14 @@ BACKUP_FILE="backup-$NOW.tar.gz"
 cd $SOURCE_DIR
 tar -czvf $BACKUP_DIR/$BACKUP_FILE .
 
+#!/bin/bash
+BACKUP_DIR="/path/to/important/files"
+DATE=$(date +%Y%m%d)
+BACKUP_FILE="backup_$DATE.tar.gz"
+tar -czf /tmp/$BACKUP_FILE $BACKUP_DIR
+aws s3 cp /tmp/$BACKUP_FILE s3://your-bucket-name/backups/$BACKUP_FILE
+
+====================================================================================
 
 2. User account creation: A shell script can be created to automate the process of creating user accounts. 
    This script can prompt the administrator for input and create the user account with the appropriate permissions. 
@@ -628,10 +637,11 @@ passwd $USERNAME
 chown $USERNAME:$USERNAME /home/$USERNAME
 chmod 700 /home/$USERNAME
 
-
-3. Monitoring system resources: A shell script can be created to monitor system resources, such as disk space or CPU usage. 
+=================================================================================================
+3.  Disk Space Monitoring: A shell script can be created to monitor system resources, such as disk space or CPU usage. 
    This script can be scheduled to run regularly using a cron job and alert the administrator if thresholds are exceeded. 
    Here's an example of a disk space monitoring script:
+
    #!/bin/bash
 ALERT_PERCENT=90
 CURRENT_PERCENT=$(df -h / | awk '{print $5}' | tail -n 1 | sed 's/%//')
@@ -639,16 +649,76 @@ if [ "$CURRENT_PERCENT" -gt "$ALERT_PERCENT" ]; then
   echo "Disk usage exceeded $ALERT_PERCENT% on $(hostname) at $(date)" | mail -s "Disk Space Alert" admin@example.com
 fi
 
+=======================================================================================================
+4. To check the disk size. If the memory reaches 10% it should send email notification saying that the memory reached 10%
+______
+#!/bin/bash
 
-4. Software installation: A shell script can be created to automate the process of installing software on multiple systems. 
-   This script can download the necessary files, install dependencies, and configure settings as needed. 
-   Here's an example of a software installation script using the apt package manager:
+size=`df -h | sed -n '2p' | awk -F " " '{print $5}' | sed 's/%/ /g'`
+disc_name=`df -h | sed -n '2p' | awk -F " " '{print $1}'`
+body=`echo "$disc_name has been reached 10%"`
+
+if [ $size -ge 10 ]; then
+        echo "size of $disc_name is $size"
+        echo "$body" | mail -s "Memory reached 10%" abc@gmail.com
+fi
+
+=======================================================================================================
+5. Software installation: A shell script can be created to automate the process of installing software on multiple systems. This script can download the necessary files, install dependencies, and configure settings as needed. 
+
 #!/bin/bash
 apt-get update
 apt-get install -y software-package
 
+=======================================================================================================
+6. Log Rotation: This script checks the log file size and compresses it if it exceeds a certain size.
 
-5. Log analysis shell scripting example
+#!/bin/bash
+LOG_FILE="/var/log/myapp.log"
+MAX_SIZE=10000000  # 10MB in bytes
+LOG_SIZE=$(stat -c %s "$LOG_FILE")
+if [ $LOG_SIZE -gt $MAX_SIZE ]; then
+  mv $LOG_FILE "$LOG_FILE.old"
+  touch $LOG_FILE
+  echo "Log file rotated" | mail -s "Log Rotation Notification" admin@example.com
+fi
+
+=======================================================================================================
+7. Check Disk I/O Performance: This script monitors disk I/O performance and alerts if the read/write operations exceed a threshold.
+
+#!/bin/bash
+DISK_IO=$(iostat -d | awk '{print $3}' | tail -n 1)
+THRESHOLD=100  # In kilobytes per second
+if [ $DISK_IO -gt $THRESHOLD ]; then
+  echo "Disk I/O exceeds threshold. Current I/O: $DISK_IO KB/s" | mail -s "Disk I/O Alert" admin@example.com
+fi
+
+=======================================================================================================
+8. Check SSL Certificate Expiry: This script checks the expiry date of an SSL certificate for a given domain.
+
+#!/bin/bash
+DOMAIN="yourwebsite.com"
+EXPIRE_DATE=$(echo | openssl s_client -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -enddate)
+EXPIRY_DATE=$(echo $EXPIRE_DATE | sed 's/.*=\(.*\)/\1/')
+EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s)
+CURRENT_TIMESTAMP=$(date +%s)
+DIFFERENCE=$(( ($EXPIRY_TIMESTAMP - $CURRENT_TIMESTAMP) / 86400 ))
+if [ $DIFFERENCE -lt 30 ]; then
+  echo "SSL certificate for $DOMAIN expires in less than 30 days. Expiry Date: $EXPIRY_DATE" | mail -s "SSL Certificate Expiry Alert" admin@example.com
+fi
+
+=======================================================================================================
+9. Check for Failed Login Attempts: This script checks for failed login attempts in the /var/log/auth.log file.
+
+#!/bin/bash
+FAILED_LOGINS=$(grep "Failed password" /var/log/auth.log | wc -l)
+THRESHOLD=5
+if [ $FAILED_LOGINS -gt $THRESHOLD ]; then
+  echo "There have been $FAILED_LOGINS failed login attempts in the last 24 hours." | mail -s "Failed Login Attempt Alert" admin@example.com
+fi
+
+=======================================================================================================
+11. Log analysis shell scripting example
 #!/bin/bash
 
 # define the log file path
@@ -671,16 +741,6 @@ while read -r line; do
   parse_log_line "$line"
 done < "$LOG_FILE"
 
+=======================================================================================================
 
-6. I have written a shell script to check th disk size. If the memory raches 10% it should send email notification saying that the memory reached 10%
-______
-#!/bin/bash
 
-size=`df -h | sed -n '2p' | awk -F " " '{print $5}' | sed 's/%/ /g'`
-disc_name=`df -h | sed -n '2p' | awk -F " " '{print $1}'`
-body=`echo "$disc_name has been reached 10%"`
-
-if [ $size -ge 10 ]; then
-        echo "size of $disc_name is $size"
-        echo "$body" | mail -s "Memory reached 10%" abc@gmail.com
-fi

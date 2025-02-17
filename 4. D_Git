@@ -10,7 +10,7 @@
 *git log --online : Used to check commit history in short form.
 *Git Remote: a Git repository that's hosted on the Internet or another network, This is useful for developers creating a local copy of a central repository, since it provides an easy way to pull upstream changes or publish local commits.
 *git pull --rebase: current status of the repository is pulled to local machine. whatever the changes done at repository, 
-                   all alligned in local machine,  new changes will be pulled to local machine 
+                   all aligned in local machine,  new changes will be pulled to local machine 
 *git pull origin main  -- pulling from main branch(files/date) to local machine.
 
 $git branch -v: To see the last commit on each branch
@@ -19,7 +19,7 @@ $git branch --merged		: to check merged brances
 $git gc: It is the process of removing unnecessary data from the local repository. 
    This data can include unreachable objects, such as old versions of files that have been deleted 
    or overwritten, as well as stale references to remote branches that no longer exist.
-$$ git gc: "git garbage collection." It is a Git command that helps to optimize and clean up the local repository by removing unnecessary files and optimizing the storage of Git objects.
+  $$ git gc
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
 Git 
@@ -83,6 +83,7 @@ ls -al - to make sure .git is present
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 Git workflow
+
 1. Workspace : It is a directory where we modify the project related files. files present in workspace are called untracked files.
                "git add" command is used to move files from workspace to staging area.
 2. Staging area/Index area : Here we save the changes. If we run "git commit" it will be committed to git repo.
@@ -120,7 +121,7 @@ Annotated tags, however, are stored as full objects in the Git database.
 
 Branch :
 -> Branch is used for parallel development.
--> If two people/two teams working on a same piece of code on two differnt branches., then later we can integrate by merging.
+-> If two people/two teams working on a same piece of code on two different branches., then later we can integrate by merging.
    syn : git branch <branchname> : It is used to create new branch.
 -> git branch : Used to list the branches and to see on which branch we are working.
 -> git checkout <branchname> : Used to switch to other branch
@@ -219,14 +220,13 @@ syn : git reset --mixed <commitid>/HEAD
                 the changes, hard reset will remove the files from git repo, staging area, & from workspace.
 syn : git reset --hard <commitid>/HEAD
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------
-git clean -df : It is used to clean the unwanted files from workspace.
+------------------------------------------------------------------------------------------------------------------------------------------------------------git clean -df : It is used to clean the unwanted files from workspace.
 git log --raw command  : To find out which files changed in a given commit. It's the fastest and simplest way to get insight into which files a commit affects
 git gist  : Gists provide a simple way to share code snippets with others. Every gist is a Git repository, which means that it can be forked and cloned.
 
 Git stash : 
 If I am working on one branch and suppose if i get some critical work on other branch which needs to be fixed 
-immidiately, before switching to other branch i need to stash the current branch by using git stash command, which
+immediately, before switching to other branch i need to stash the current branch by using git stash command, which
 stores the local files on the temp location. Once i switch to a current branch after completing the critical work
 i can bring back the changes using git stash pop.
 
@@ -242,18 +242,19 @@ syn :
 6. git stash -p : to stash particular file
 
 ----------------------------------------------------------------------------------------------------------------------------------------
-Branching strategy:
--> Devlopers creates feature branch for thier own purpose and merge it to the dev branch.
+Branching strategy
+
+-> Devlopers creates feature branch for their own purpose and merge it to the dev branch.
 -> DevOps team creates release branch and merge them to the dev branch.
 -> Developers can pull the changes from master branch but they cannot push the changes to the master.
 
-BRanches can be created for many reasons, Here we create branches for releasing.
+Branches can be created for many reasons, Here we create branches for releasing.
 Once the development branch is created from the master, development will going on the dev branch, once the code ready for 
 1st release we create release1 branch and make 1st release.
-whatever issues releated to the release 1 branch will be fixed on the release 1 branch itself.
-Parallelly development will be going on on the dev branch for the 2nd release, once the code is ready for 2nd release
+whatever issues related to the release 1 branch will be fixed on the release 1 branch itself.
+Parallelly development will be going on the dev branch for the 2nd release, once the code is ready for 2nd release
 on the dev branch we create release 2 branch from the dev branch and make 2nd release from the release2 branch.
-Here release 2 branch will act as maintainance branch and so on...
+Here release 2 branch will act as maintenance branch and so on...
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 What are some common Git branching strategies?
@@ -322,10 +323,11 @@ use to see modifications.
 * Fork request: On the other hand, changes made on the local machine (cloned repository) can be pushed to the upstream repository directly. For this, the user must have the write access to the repository otherwise this is not possible. If the user does not have write access, the only way to go is through the forked request.
 * Push request: A "push request" would be the target repository requesting you to push your changes.
 
+
 Git bisect: You use it by first telling it a "bad" commit that is known to contain the bug, and a "good" commit that is known to 
 be before the bug was introduced. Then git bisect picks a commit between those two endpoints and asks you whether the selected 
 commit is "good" or "bad".
-To know whis is bug in a commit.
+To know which is bug in a commit.
 git bisect start
 git bisect good
 git bisect bad
@@ -346,7 +348,7 @@ we can say that an absolute path is a complete path from start of actual file sy
 Relative pat: Relative path is defined as the path related to the present working directly(pwd).
 
 .gitignore: untracked files are ignored.
-The.gitignore file is a text file that tells Git which files or folders to ignore in a project. A local.gitignore file is usually 
+The .gitignore file is a text file that tells Git which files or folders to ignore in a project. A local .gitignore file is usually 
 placed in the root directory of a project. You can also create a global.gitignore file and any entries in that file will 
 be ignored in all of your Git repositories.
 
@@ -370,6 +372,38 @@ Git Reflog — How to recover a deleted branch that was not merged. It can track
 git -rm file: remove files
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is Branch Protection?
+-> The world of software development can be chaotic. You’ve got many developers – and now code GPTs – contributing in parallel to a project, all with their own changes.
+-> Branch protection facilitates a structured workflow for developers, where code contributions are scrutinized and tested, ensuring that only code that meets the team's standards is merged. This is particularly important in "inner sourcing" models, where everyone has "write" access to the source code repositories, but branches that are deployed to higher environments are protected. 
+
+Q. What is “Inner sourcing” and how does it work?
+In an "inner sourcing" model, while all developers have the ability to contribute code, not all contributions are treated equally. For instance, branches destined for production deployment are shielded by branch protection rules. This means that although developers can freely contribute to the codebase, their changes must undergo a rigorous review and testing process before being deployed to more sensitive environments. Inner sourcing leverages the collective expertise and creativity of the entire team while ensuring that the deployed code is secure, reliable, and aligned with organizational standards.
+
+
+Q. Branch Protection Contribution to DevOps Governance:
+-> Branch protection plays a pivotal role in DevOps governance by enforcing a set of policies and practices that guide the development and deployment process. Key considerations include:
+1. Approval Requirements: Depending on the sensitivity of the area, branch protection rules can mandate one or more reviewers to approve pull requests before merging. This ensures that changes are examined by multiple sets of eyes, especially in critical areas of the codebase. It also proves that change management is in place for production code changes.
+
+2. Status Checks: To maintain code quality/security and prevent disruptions, certain status checks, such as successful builds or passed tests, must pass before merging. This automated gatekeeping ensures that only code that meets the predefined benchmarks can be integrated, such as ensuring the no new high severity vulnerabilities are introduced in the code changes.  
+
+3. Conversation Resolution: The setting "Require conversation resolution before merging" ensures that all review comments and discussions are adequately addressed before code is merged. This holds developers to a higher standard of accountability and improves code quality and security.
+
+
+
+Q. Branch Protection Contribution to DevSecOps Governance:
+-> Branch protection is equally essential in DevSecOps, where security is integrated into the development process:
+
+1. Reviewer Rights: It's important to ensure that only approvals from individuals with the appropriate rights (e.g., CODEOWNERS) are considered valid, reducing excessive permissions and ensuring that changes are reviewed by subject matter experts. It is worth mentioning that any developer can review pull requests, but not every review or approval is counted towards the ability to merge the code, as the approver needs to be specifically defined in the CODEOWNERS file.  
+2. Override Policies: In scenarios where high-priority fixes need to be deployed rapidly, certain users may need the ability to override branch protection policies. Monitoring such overrides is crucial for security teams to understand potential risks and ensure that security policies are not circumvented.
+3. Bypassing Policies: Controls should be in place to prevent or monitor when users bypass branch protection policies, such as force pushing or merging without additional reviews on a pull request.  
+
+
+Q. Branch Protection Policies vs. Rulesets:
+-> Branch protection policies and rulesets both offer frameworks for implementing governance controls, but they cater to different needs:
+1. Branch Protection Policies are specific to individual branches within a repository, allowing for granular control over how code is reviewed, tested, and merged. They are ideal for projects requiring specific safeguards on critical branches.
+2. Rulesets, on the other hand, can be applied at a more macro level, such as across an entire organization or repository. They offer a broader, more standardized approach to governance that can be consistently applied.  
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Q. how do u restrict commiting/modifying by reiewers, after PR is raised?
 -> To restrict committing or modifying code by reviewers after a pull request (PR) is raised in a version 
    control system like GitHub, GitLab or Bitbucket, you can use the following approaches:

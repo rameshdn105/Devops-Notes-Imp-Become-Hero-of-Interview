@@ -1,0 +1,1323 @@
+Steps included in running an application
+Manually,
+1. Build the application ( Maven{java}, Ant{C,C++}, Gradle, GCC )
+2. generating the artifacts ( .war , .jar , .zip )
+3. Stroing the artifacts ( Nexus, Gitlab, S3 bucket )
+4. Scan the artifacts ( SonarQube )
+5. Deploy into non-prod (dev and Qa) environments/Configuration tools ( Ansible , chef , docker, Puppet )
+6. testing ( Unit-test (Junit), loadtest, regression test, automation test(Selenium) )
+7. deploy to prod environments ( Ansible, chef , docker )
+8. tagging/versioning ( Nexus ) - optional
+
+-----------------------------------------------------------------------------------------------
+Difference between Jenkins and GitHub Actions: 
+
+					Jenkins				GitHub Actions
+Software model			Open source				Open source
+Hosting				On-premise and cloud-based		On-premise and cloud-based
+Supported OS			Linux/Windows/MacOS			Linux/Windows/MacOS
+Ease of use and Setup		Medium					Easy to use
+Installation			Required				Not required
+Scalability			Highly scalable				Limited by GitHub’s infrastructure
+Control		Doesn’t provide full control over CI\CD pipelines	Full control over CI\CD pipelines
+Paid plan details      Free to use, requires a dedicated administrator	Both free and paid plans with varying features and usage limits.
+
+** Pricing Considerations
+-- GitHub Actions offers a generous free tier for both public and private repositories. This makes it an attractive choice, especially for smaller teams or open-source projects with budget constraints.
+-- Jenkins is an open-source tool, meaning it’s free to use, but organizations need to consider infrastructure costs for hosting and maintaining Jenkins servers, potentially impacting the overall cost comparison.
+
+** User Interface:
+-- The Jenkins UI is not user-friendly and can be overwhelming for beginners. It requires a lot of configuration and customization to set up even the simplest of pipelines. 
+-- GitHub Actions, on the other hand, has a modern and intuitive UI that is easy to navigate. It provides a visual representation of workflows and simplifies pipeline creation and management.
+
+** Ease of Use:
+-- Jenkins requires a lot of setup and configuration before it can be used. It also has a steep learning curve due to its complexity.
+-- GitHub Actions is very easy to set up and use. It has a simple YAML syntax that is easy to read and understand. It also provides pre-built templates that can be used to quickly create pipelines.
+
+** Integration Capabilities
+-- Jenkins has a long-standing reputation for its extensive integration capabilities. Its vast plugin ecosystem allows seamless integration with a wide array of third-party services and tools. 
+	-- Jenkins, on the other hand, requires plugins and additional configuration to integrate with GitHub.
+-- GitHub Actions, while growing, might have slightly fewer integrations out of the box, but it offers a solid foundation for CI/CD workflows.
+
+** Scalability
+-- GitHub Actions handles scalability well, particularly with its matrix builds feature that allows parallel testing across different configurations.
+-- Jenkins has been a go-to choice for large enterprises with intricate scaling requirements, thanks to its distributed build capabilities and extensive plugin support.
+
+** Organizational Preference
+-- Jenkins is often preferred in large enterprises with established CI/CD processes. It is best suited for projects with intricate build and deployment requirements. 
+-- GitHub Actions however, is particularly favoured by smaller teams for its simplicity and direct integration with repositories. Organizations heavily relying on GitHub for version control may find GitHub Actions more seamless.
+
+** Community:
+-- Support Jenkins has been around for a long time and has a large and active community. It has a vast repository of plugins that can be used to extend its functionality. 
+-- GitHub Actions, although relatively new, has quickly gained traction and has a growing community of developers. It also has a library of pre-built actions that can be used to quickly create workflows.
+
+** Jenkins offers extensibility and customization, while GitHub Actions provides seamless integration and simplicity. As organizations increasingly migrate to cloud-based solutions, GitHub Actions is gaining traction, but the choice ultimately depends on the specific requirements and constraints of your development environment.
+
+
+--------------------------------------------------------------------------
+1. What is Github?
+-> GitHub is a platform that allows users to store, create, change, and collaborate on files and code. It's used by programmers and developers to manage projects, share progress, and work on open-source projects.
+ 
+
+2. GitHub Actions: GitHub Actions is a platform that automates software development workflows, including builds, tests, and deployments. 
+-- It's a continuous integration and continuous delivery (CI/CD) tool that allows you to: Create custom CI workflows, Speed up application development, Run arbitrary code on a repository when an event occurs, and Combine actions in a customized workflow. 
+
+-- GitHub provides Linux, Windows, and macOS virtual machines to run your workflows, or you can host your own self-hosted runners in your own data center or cloud infrastructure.
+
+
+-----------------------------------------------------------------------
+** The components of GitHub Actions: 
+          GitHub Actions workflow to be triggered when an event occurs in your repository, such as a pull request being opened or an issue being created. 
+** Your workflow contains one or more jobs which can run in sequential order or in parallel. 
+** Each job will run inside its own virtual machine runner, or inside a container, and has one or more steps that either run a script that you define or run an action, which is a reusable extension that can simplify your workflow.
+
+
+1. Workflows: A workflow is a configurable automated process that will run one or more jobs. 
+-- Workflows are defined by a YAML file checked in to your repository and will run when triggered by an event in your repository, or they can be triggered manually, or at a defined schedule.
+
+-- Workflows are defined in the .github/workflows directory in a repository. A repository can have multiple workflows, each which can perform a different set of tasks such as:
+	a. Building and testing pull requests.
+	b. Deploying your application every time a release is created.
+	c. Adding a label whenever a new issue is opened.
+** You can reference a workflow within another workflow. For more information, see "Reusing workflows."
+
+
+2. Events: (push, pull_request, schedule, Manual Triggers)
+-- An event is a specific activity in a repository that triggers a workflow run. 
+-- For example, an activity can originate from GitHub when someone creates a pull request, opens an issue, or pushes a commit to a repository. 
+-- You can also trigger a workflow to run on a "schedule", by "posting to a REST API", or manually.
+-- In a public repository, scheduled workflows are automatically disabled when no repository activity has occurred in 60 days. (Re-Enable: GitHub - Actions - Select your workflow - Enable workflow)
+
+-- This example triggers the workflow every day at 5:30 and 17:30 UTC:
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '30 5,17 * * *'
+
+-- Cron syntax has five fields separated by a space, and each field represents a unit of time.
+
+┌───────────── minute (0 - 59)
+│ ┌───────────── hour (0 - 23)
+│ │ ┌───────────── day of the month (1 - 31)
+│ │ │ ┌───────────── month (1 - 12 or JAN-DEC)
+│ │ │ │ ┌───────────── day of the week (0 - 6 or SUN-SAT)
+│ │ │ │ │
+│ │ │ │ │
+│ │ │ │ │
+* * * * *
+
+-- For a complete list of events that can be used to trigger workflows, see Events that trigger workflows.
+
+
+3. Jobs: A job is a set of steps in a workflow that is executed on the same runner. Each step is either a shell script that will be executed, or an action that will be run. 
+-- Steps are executed in order and are dependent on each other. Since each step is executed on the same runner, you can share data from one step to another. 
+-- For example, you can have a step that builds your application followed by a step that tests the application that was built.
+
+-- You can configure a job's dependencies with other jobs; by default, jobs have no dependencies and run in parallel. When a job takes a dependency on another job, it waits for the dependent job to complete before running.
+
+-- For example, you might configure multiple build jobs for different architectures without any job dependencies and a packaging job that depends on those builds. The build jobs run in parallel, and once they complete successfully, the packaging job runs.
+
+
+4. Actions: An action is a custom application for the GitHub Actions platform that performs a complex but frequently repeated task. 
+-- Use an action to help reduce the amount of repetitive code that you write in your workflow files. An action can pull your Git repository from GitHub, set up the correct toolchain for your build environment, or set up the authentication to your cloud provider.
+
+
+5. Runners: A runner is a server that runs your workflows when they're triggered. Each runner can run a single job at a time. GitHub provides Ubuntu Linux, Microsoft Windows, and macOS runners to run your workflows. Each workflow run executes in a fresh, newly-provisioned virtual machine.
+
+-- GitHub also offers larger runners, which are available in larger configurations.
+
+-- If you need a different operating system or require a specific hardware configuration, you can host your own runners.
+
+-- For more information about self-hosted runners, see "Hosting your own runners."
+-- Self-hosted runners: A self-hosted runner is a system that you deploy and manage to execute jobs from GitHub Actions on GitHub.com.
+
+-- A self-hosted runner is automatically removed from GitHub if it has not connected to GitHub Actions for more than 14 days. An ephemeral self-hosted runner is automatically removed from GitHub if it has not connected to GitHub Actions for more than 1 day.
+
+
+---------------------------------------------------------------------------
+** GitHub's architecture:
+-- It is a sophisticated and highly scalable system designed to support a wide range of development activities. Its architecture consists of various components and services that work together to provide functionalities like version control, issue tracking, continuous integration/continuous deployment (CI/CD), and more.
+
+Here’s an overview of GitHub’s architecture:
+
+1. Web Interface
+	a. Frontend: GitHub’s web interface is built using modern web technologies like HTML, CSS, and JavaScript. It provides users with access to repositories, issues, pull requests, and other GitHub features through a user-friendly interface.
+	b. APIs: GitHub offers RESTful and GraphQL APIs for programmatic access to repositories, issues, pull requests, and other resources.
+
+2. Git Repositories
+-- Git Database: At the core of GitHub is the Git database, which stores the actual source code, commits, branches, and tags. Git repositories are distributed and use a distributed version control system (DVCS) model.
+
+3. Database Systems
+-- Primary Databases: GitHub uses a combination of SQL (PostgreSQL) and NoSQL (Cassandra) databases to handle different types of data. PostgreSQL is used for transactional data and relational data, while Cassandra is used for scalable and high-throughput data needs.
+-- Caching: GitHub employs caching systems like Redis to speed up data retrieval and reduce database load.
+
+4. Search and Indexing
+-- Elasticsearch: GitHub uses Elasticsearch to provide powerful search capabilities across repositories, issues, pull requests, and other resources.
+-- Indexing: Data indexing is crucial for efficient search and retrieval.
+
+5. Continuous Integration/Continuous Deployment (CI/CD)
+-- GitHub Actions: GitHub Actions is an integrated CI/CD service that allows users to automate workflows directly within GitHub. Actions can be used to build, test, and deploy code based on various triggers.
+-- Runners: GitHub Actions uses both hosted and self-hosted runners to execute jobs defined in workflow YAML files.
+
+6. Authentication and Authorization
+-- OAuth and Personal Access Tokens: GitHub supports OAuth for third-party application integration and Personal Access Tokens (PATs) for authentication and authorization.
+-- SAML and Single Sign-On (SSO): For enterprise accounts, GitHub integrates with SAML and SSO for user authentication and management.
+
+7. Infrastructure and Deployment
+-- Microservices Architecture: GitHub uses a microservices architecture to manage different functionalities and services. Each microservice handles a specific aspect of the platform.
+-- Load Balancers: Load balancers distribute incoming traffic across multiple servers to ensure high availability and reliability.
+-- Content Delivery Network (CDN): GitHub uses CDNs to deliver static assets (like images, CSS, and JavaScript) quickly to users around the world.
+
+8. Monitoring and Logging
+-- Monitoring: GitHub employs various monitoring tools and practices to track the performance and health of its services.
+-- Logging: Centralized logging is used to collect and analyze logs for troubleshooting and performance monitoring.
+
+
+---------------------------------------------------------------------------
+** Differences between GitHub-hosted and self-hosted runners
+-- GitHub-hosted runners offer a quicker, simpler way to run your workflows, while self-hosted runners are a highly configurable way to run workflows in your own custom environment.
+
+1. GitHub-hosted runners:
+# Receive automatic updates for the operating system, preinstalled packages and tools, and the self-hosted runner application.
+# Are managed and maintained by GitHub.
+# Provide a clean instance for every job execution.
+# Use free minutes on your GitHub plan, with per-minute rates applied after surpassing the free minutes.
+
+2. Self-hosted runners:
+# Receive automatic updates for the self-hosted runner application only, though you may disable automatic updates of the runner. For more information about controlling runner software updates on self-hosted runners, see "Autoscaling with self-hosted runners." You are responsible for updating the operating system and all other software.
+# Can use cloud services or local machines that you already pay for.
+# Are customizable to your hardware, operating system, software, and security requirements.
+# Don't need to have a clean instance for every job execution.
+# Are free to use with GitHub Actions, but you are responsible for the cost of maintaining your runner machines.
+
+Setting up Self-Hosted Runners:
+Organization level self-hosted runners:
+ 
+Step1: Go to organization - Actions - Runner Groups - New Runner
+ 
+Step2: New Self-Hosted runner - Select Linux, X64 ->
+ 
+Run below commands on your EC2 Machine:
+ 
+1. Download
+We recommend configuring the runner under "\actions-runner". This will help avoid issues related to service identity folder permissions and long path restrictions on Windows.
+ 
+# Create a folder under the drive root
+$ mkdir actions-runner; cd actions-runner
+# Download the latest runner package
+$ Invoke-WebRequest -Uri https://github.com/actions/runner/releases/download/v2.321.0/actions-runner-win-x64-2.321.0.zip -OutFile actions-runner-win-x64-2.321.0.zip
+# Optional: Validate the hash
+$ if((Get-FileHash -Path actions-runner-win-x64-2.321.0.zip -Algorithm SHA256).Hash.ToUpper() -ne '88d754da46f4053aec9007d172020c1b75ab2e2049c08aef759b643316580bbc'.ToUpper()){ throw 'Computed checksum did not match' }
+# Extract the installer
+$ Add-Type -AssemblyName System.IO.Compression.FileSystem ; [System.IO.Compression.ZipFile]::ExtractToDirectory("$PWD/actions-runner-win-x64-2.321.0.zip", "$PWD")
+ 
+2. Configure
+# Create the runner and start the configuration experience
+$ ./config.cmd --url https://github.com/Demo-Project-12345 --token A4QDRRRRK734HYIAOQCPW3LHSTLLE
+# Run it!
+$ ./run.cmd
+ 
+3. Using your self-hosted runner
+# Use this YAML in your workflow file for each job
+runs-on: self-hosted
+
+--------------------------------------------------------------------------
+** Communication between self-hosted runners and GitHub
+-- The self-hosted runner connects to GitHub to receive job assignments and to download new versions of the runner application. 
+-- The self-hosted runner uses an "HTTPS long poll" that opens a connection to GitHub for 50 seconds, and if no response is received, it then times out and creates a new long poll. The application must be running on the machine to accept and run GitHub Actions jobs.
+
+-- The connection between self-hosted runners and GitHub is over HTTPS (port 443).
+-- Since the self-hosted runner opens a connection to GitHub.com, you do not need to allow GitHub to make inbound connections to your self-hosted runner.
+-- Self-hosted runners send heartbeat signals to GitHub to indicate that they are active and available.
+-- When you add a self-hosted runner to your GitHub repository or organization, it registers itself with GitHub. This involves:
+	@ Token Exchange: The runner obtains a registration token from GitHub during the setup process.
+	@ Runner Configuration: The runner is configured to connect to GitHub using this token.
+-- You must ensure that the machine has the appropriate network access with at least 70 kilobits per second upload and download speed to communicate with the GitHub hosts listed below. Some hosts are required for essential runner operations, while other hosts are only required for certain functionality.
+-- You can use the REST API to get meta information about GitHub, including the IP addresses of GitHub services. For more information about the domains and IP addresses used, see "REST API endpoints for meta data."
+
+
+** Self-hosted runner security
+-- We recommend that you only use self-hosted runners with private repositories. This is because forks of your public repository can potentially run dangerous code on your self-hosted runner machine by creating a pull request that executes the code in a workflow.
+
+-- This is not an issue with GitHub-hosted runners because each GitHub-hosted runner is always a clean isolated virtual machine, and it is destroyed at the end of the job execution.
+
+-- Untrusted workflows running on your self-hosted runner pose significant security risks for your machine and network environment, especially if your machine persists its environment between jobs. Some of the risks include:
+	* Malicious programs running on the machine.
+	* Escaping the machine's runner sandbox.
+	* Exposing access to the machine's network environment.
+	* Persisting unwanted or dangerous data on the machine.
+
+
+----------------------------------------------------------------------
+-- Reusing workflows: A workflow that uses another workflow is referred to as a "caller" workflow. The reusable workflow is a "called" workflow. One caller workflow can use multiple called workflows. Each called workflow is referenced in a single line.
+-- Reusable workflows and composite actions both help you to avoid duplication. Whereas reusable workflows allow you to reuse an entire workflow, with multiple jobs and steps, composite actions combine multiple steps that you can then run within a job step, just like any other action. For more information, see "Avoiding duplication."
+
+** Access to reusable workflows:  A reusable workflow can be used by another workflow if any of the following is true:
+
+	a. Both workflows are in the same repository.
+	b. The called workflow is stored in a public repository, and your organization allows you to use public reusable workflows.
+	c. The called workflow is stored in a private repository and the settings for that repository allow it to be accessed. For more information, see "Sharing actions and workflows with your organization" and "Sharing actions and workflows from your private repository."
+
+
+** Using runners
+a. Using GitHub-hosted runners: The assignment of GitHub-hosted runners is always evaluated using only the caller's context. Billing for GitHub-hosted runners is always associated with the caller. The caller workflow cannot use GitHub-hosted runners from the called repository. For more information, see "Using GitHub-hosted runners."
+
+b. Using self-hosted runners: Called workflows that are owned by the same user or organization as the caller workflow can access self-hosted runners from the caller's context. This means that a called workflow can access self-hosted runners that are:
+	1. In the caller repository
+	2. In the caller repository's organization, provided that the runner has been made available to the caller repository
+
+
+** Limitations
+1. You can connect up to four levels of workflows. For more information, see "Nesting reusable workflows."
+2. You can call a maximum of 20 unique reusable workflows from a single workflow file. This limit includes any trees of nested reusable workflows that may be called starting from your top-level caller workflow file.
+-- For example, top-level-caller-workflow.yml → called-workflow-1.yml → called-workflow-2.yml counts as 2 reusable workflows.
+3. Any environment variables set in an env context defined at the workflow level in the caller workflow are not propagated to the called workflow. For more information, see "Store information in variables" and "Accessing contextual information about workflow runs."
+4. Similarly, environment variables set in the env context, defined in the called workflow, are not accessible in the env context of the caller workflow. Instead, you must use outputs of the reusable workflow. For more information, see "Using outputs from a reusable workflow."
+5. To reuse variables in multiple workflows, set them at the organization, repository, or environment levels and reference them using the vars context. For more information see "Store information in variables" and "Accessing contextual information about workflow runs."
+6. Reusable workflows are called directly within a job, and not from within a job step. You cannot, therefore, use GITHUB_ENV to pass values to job steps in the caller workflow.
+
+
+** Calling a reusable workflow
+- You call a reusable workflow by using the uses keyword. Unlike when you are using actions within a workflow, you call reusable workflows directly within a job, and not from within job steps.
+
+jobs.<job_id>.uses
+
+-- You reference reusable workflow files using one of the following syntaxes:
+
+	{owner}/{repo}/.github/workflows/{filename}@{ref} for reusable workflows in public and private repositories.
+	./.github/workflows/{filename} for reusable workflows in the same repository.
+
+** You can call multiple workflows, referencing each in a separate job.
+jobs:
+  call-workflow-1-in-local-repo:
+    uses: octo-org/this-repo/.github/workflows/workflow-1.yml@172239021f7ba04fe7327647b213799853a9eb89
+  call-workflow-2-in-local-repo:
+    uses: ./.github/workflows/workflow-2.yml
+  call-workflow-in-another-repo:
+    uses: octo-org/another-repo/.github/workflows/workflow.yml@v1
+
+
+** Passing inputs and secrets to a reusable workflow
+- To pass named inputs to a called workflow, use the "with" keyword in a job. Use the "secrets" keyword to pass named secrets. For inputs, the data type of the input value must match the type specified in the called workflow (either boolean, number, or string).
+
+jobs:
+  call-workflow-passing-data:
+    uses: octo-org/example-repo/.github/workflows/reusable-workflow.yml@main
+    with:
+      config-path: .github/labeler.yml
+    secrets:
+      envPAT: ${{ secrets.envPAT }}
+
+-- Workflows that call reusable workflows in the same organization or enterprise can use the inherit keyword to implicitly pass the secrets.
+
+jobs:
+  call-workflow-passing-data:
+    uses: octo-org/example-repo/.github/workflows/reusable-workflow.yml@main
+    with:
+      config-path: .github/labeler.yml
+    secrets: inherit
+
+
+** Using a matrix strategy with a reusable workflow
+Jobs using the matrix strategy can call a reusable workflow.
+-- A matrix strategy lets you use variables in a single job definition to automatically create multiple job runs that are based on the combinations of the variables. For example, you can use a matrix strategy to pass different inputs to a reusable workflow. For more information about matrices, see "Running variations of jobs in a workflow."
+-- This example job below calls a reusable workflow and references the matrix context by defining the variable target with the values [dev, stage, prod]. It will run three jobs, one for each value in the variable.
+
+YAML
+jobs:
+  ReuseableMatrixJobForDeployment:
+    strategy:
+      matrix:
+        target: [dev, stage, prod]
+    uses: octocat/octo-repo/.github/workflows/deployment.yml@main
+    with:
+      target: ${{ matrix.target }}
+
+
+---------------------------------------------------------------------------Q. The errors or bugs in GitHub and GitHub actions and how to troubleshoot it?
+-> Common Errors in GitHub
+1. Authentication Issues
+Error: “Permission denied” or “Authentication failed.”
+Troubleshooting:
+Verify Credentials: Ensure your SSH keys or personal access tokens (PAT) are correctly configured.
+Token Scope: Make sure your PAT has the correct permissions.
+SSH Configuration: Check your SSH key settings in your GitHub account and ensure your local SSH configuration is correct.
+Cache Issues: Clear your credential cache or try using the git credential helper.
+
+2. Repository Access Issues
+Error: “Repository not found” or “You don’t have permission.”
+Troubleshooting:
+Check Repository URL: Ensure the URL you’re using is correct.
+Permissions: Verify that you have the necessary access rights to the repository.
+Organization Settings: For organization-owned repositories, ensure that the repository visibility and membership are configured properly.
+
+3 Merge Conflicts
+Error: Conflicts when merging branches.
+Troubleshooting:
+Resolve Conflicts: Manually resolve conflicts in your local repository and commit the changes.
+Rebase: Alternatively, you can rebase your branch on top of the target branch to resolve conflicts.
+
+4. File Size Limits
+Error: “File size exceeds the maximum allowed size.”
+Troubleshooting:
+Git LFS: Use Git Large File Storage (LFS) for managing large files.
+Check File Size: Avoid committing files that exceed GitHub’s size limits.
+
+-- Common Errors in GitHub Actions
+1. . Workflow Failures
+Error: “Workflow run failed” or specific step failures.
+Troubleshooting:
+Check Logs: Review the logs provided by GitHub Actions to identify where the failure occurred.
+Syntax Errors: Verify the syntax of your workflow YAML files.
+Action Versions: Ensure that you’re using compatible versions of actions.
+Secrets and Environment Variables: Make sure that required secrets and environment variables are correctly set.
+
+2. Action Not Found
+Error: “Action not found” or “Invalid action.”
+Troubleshooting:
+Action Repository: Ensure the action’s repository is available and the URL is correct.
+Version: Verify that you’re using a valid version of the action.
+
+3. Quota Limits
+Error: “Usage limits exceeded” or similar messages.
+Troubleshooting:
+Check Usage: Monitor your GitHub Actions usage and limits in the GitHub billing and usage section.
+Optimize Workflows: Review and optimize your workflows to reduce unnecessary runs or use caching.
+
+4. Cache Issues
+Error: “Cache miss” or outdated cached data.
+Troubleshooting:
+Invalidate Cache: Use cache keys to ensure that the cache is updated correctly or manually clear the cache if necessary.
+Check Cache Key: Ensure your cache key patterns are correctly defined.
+
+
+---------------------------------------------------------------------------
+** Basic overview and example of how to create a GitHub Actions YAML pipeline:
+
+Basic Structure of a GitHub Actions Workflow
+1. name: The name of your workflow. This is optional but helps to identify the workflow in the GitHub Actions UI.
+2. on: Specifies the events that will trigger the workflow. Common triggers include push, pull_request, schedule, and workflow_dispatch.
+3. jobs: Defines the jobs that make up the workflow. Each job runs in a separate runner and can have steps that specify the actions to be performed.
+4. steps: A sequence of tasks within a job. Steps run in the order they are defined and can include actions or commands.
+5. runs-on: Specifies the type of runner that will execute the job. Common options include ubuntu-latest, windows-latest, or macos-latest
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm install
+      - run: npm run build
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - run: npm test
+
+  deploy:
+    name: Deploy Application
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+      - run: deploy.sh
+
+
+--------------------------------------------------------------------
+Q. Tell me something about Continuous Integration, Continuous Delivery, and Continuous Deployment (CI , CD)?
+-> Continuous Integration: A software development process where the changes made to software are integrated into the main code as and when a patch is ready so that the software will be always ready to be - built, tested, deployed, monitored - continuously.
+-> It is the integration btw SCM (Source Code Management) to jenkins, whenever someone commits code into SCM jenkins will pick the latest code into pipeline and start building it. The process will be continous with the help of github webhook.
+
+*  webhook: A webhook is an HTTP-based callback function that allows lightweight, event-driven communication between 2 application 
+         programming interfaces (APIs).
+*  API: API makes Jenkins even easier to use by providing an easy to use conventional python interface.
+
+** Continuous Delivery: This is a software Development Process where the continuously integrated (CI) changes will be tested & deployed continuously into a specific environment, generally through a manual release process, after all the quality checks are successful.
+-> Once the artifact is build and deployed into UAT(User Acceptance Testing) or QA(Quality Assurance) servers, will to testing of the application on QA servers.
+                                                                                               
+** Continuous Deployment: A software Development practice where the continuously integrated (CI) changes are deployed automatically into the target environment after all the quality checks are successful.
+-> Once testing is done, we deploy the application into prod servers where end user is using the application.
+
+Based on the level of automation, the above three paradigms can be better represented as below -
+
+CODE -> BUILD -> INTEGRATE -> RELEASE -> DEPLOY
+<-CONT INTGn->
+<- -   CONTINUOUS DELIVERY  - ->
+<- - - - -    CONTINUOUS DEPLOYMENT   - - - ->
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. How to secure GitHub actions?
+-- Securing GitHub Actions is crucial to protect your code, workflows, and infrastructure from potential threats and unauthorized access. Here are some best practices and strategies to ensure the security of your GitHub Actions workflows:
+
+1. Manage Secrets Securely
+-- Use GitHub Secrets: Store sensitive data such as API keys, passwords, and tokens in GitHub Secrets. Avoid hardcoding secrets directly into your workflow files. Access secrets using the ${{ secrets.SECRET_NAME }} syntax.
+-- Limit Secret Scope: Use repository or organization-level secrets only where necessary. Consider using environment-specific secrets for different deployment environments (e.g., development, staging, production).
+	
+2. Secure Workflow Files
+-- Limit Access: Restrict access to workflow files by setting appropriate repository permissions. Only allow trusted users to modify workflow files.
+-- Review and Audit: Regularly review workflow YAML files for security vulnerabilities and ensure that they follow best practices.
+
+3. Use Least Privilege Principle
+-- Restrict Permissions: Configure GitHub Actions workflows to use the least privilege principle. For example, if a workflow does not need to push code, avoid giving it write access to the repository.
+-- Role-Based Access Control: Use GitHub’s role-based access control features to grant permissions based on the role of each user or team within your organization.
+
+4. Secure Self-Hosted Runners
+-- Isolate Runners: Run self-hosted runners in isolated environments or containers to prevent unauthorized access and limit the impact of potential security breaches.
+-- Update Regularly: Keep self-hosted runners up to date with the latest security patches and updates.
+-- Limit Network Access: Restrict network access for self-hosted runners to only necessary endpoints. Use firewalls or security groups to limit exposure.
+
+5. Review and Control Third-Party Actions
+-- Use Trusted Actions: Only use actions from trusted sources and review the code of third-party actions when possible. Verify the security and reliability of actions before adding them to your workflows.
+-- Monitor Dependencies: Regularly update actions and dependencies to address security vulnerabilities and ensure compatibility with GitHub Actions.
+
+6. Monitor and Log Activity
+-- Enable Logging: GitHub Actions automatically logs workflow runs. Review logs to detect and investigate suspicious or unexpected behavior.
+-- Set Up Alerts: Configure alerts and notifications for workflow failures, unauthorized access attempts, or other anomalies.
+
+7. Use Workflow Restrictions
+-- Restrict Workflow Triggers: Control when workflows are triggered to reduce the risk of unauthorized or malicious activity. For example, restrict workflow triggers to specific branches or events.
+
+yaml
+Copy code
+on:
+  push:
+    branches:
+      - main
+
+-- Require Pull Request Reviews: Configure branch protection rules to require pull request reviews before merging changes. This helps ensure that workflows are reviewed and approved by authorized team members.
+
+8. Secure Workflow Artifacts
+-- Protect Artifacts: Use permissions and access controls to protect artifacts produced by workflows. Avoid exposing sensitive information in artifacts.
+-- Limit Artifact Retention: Configure artifact retention settings to limit the duration that artifacts are stored and reduce the risk of leaking sensitive data.
+
+9. Implement Continuous Security Practices
+-- Automate Security Checks: Integrate security tools and practices into your workflows, such as static code analysis, vulnerability scanning, and dependency checks.
+-- Regular Audits: Conduct regular security audits and reviews of your GitHub Actions configurations and workflows to identify and address potential security issues.
+
+10. Educate and Train Teams
+-- Security Training: Provide security training and awareness for your development teams to help them understand and implement security best practices in their workflows.
+-- Documentation: Maintain clear documentation on the security practices and procedures related to GitHub Actions within your organization.
+
+
+------------------------------------------------------------------------
+Q. How do you store credentials in GitHub securely?
+-> GitHub Secrets is a built-in feature for storing sensitive information like API keys, passwords, and other credentials that your workflows or applications need. Secrets are encrypted and can be used in GitHub Actions workflows without exposing them in the code.
+
+Go to Settings > Secrets and variables > Actions
+1. Repository Secrets:: Click New repository secret
+2. Organization Secrets:: New organization secret
+3. Environment Secrets:: Settings > Environments  :: Add secret under the environment’s secrets section
+
+
+---------------------------------------------------------------------------
+3. What are the common use cases GitHub actions is used for?
+-> Jenkins being open-source automation can be used for any kind of software-based
+    automation. Some of the common use-cases include but not limited to -
+* Software build jobs
+* Sanity/Smoke/CI/Regression test jobs
+* Web/Data Scraping related jobs
+* Code coverage measurement jobs
+* General-purpose automation
+* Reverse Engineering jobs
+* Key Decoding jobs & many other jobs where software automation will be applicable.
+
+
+---------------------------------------------------------------------------
+5. What is a GitHub Actions job?
+-> In GitHub Actions, a job is a fundamental unit of work in a workflow. Jobs define a series of steps that are executed in a specific order, and they can be used to perform tasks such as building code, running tests, or deploying applications. Each job runs on a specific runner and can have its own environment and configuration.
+
+-- Job Execution
+Sequential vs. Parallel Execution: By default, jobs in a workflow run in parallel. However, you can control the order of execution by specifying dependencies using the "needs" keyword. Jobs that do not depend on each other will run simultaneously, while jobs that have dependencies will wait for the required jobs to complete before starting.
+
+-- Job Configuration Options
+Jobs have additional configuration options for more advanced use cases:
+
+1. timeout-minutes: Set a timeout for how long a job is allowed to run before being automatically canceled.
+yaml
+timeout-minutes: 30
+
+2. container: Run jobs inside a Docker container.
+yaml
+container:
+  image: node:14
+
+3. strategy: Configure matrix builds to run jobs with different configurations (e.g., different Node.js versions).
+yaml
+strategy:
+  matrix:
+    node-version: [12, 14, 16]
+
+
+---------------------------------------------------------------------------
+** Name some of the plugin used in GitHub actions and how to install it?
+-- In GitHub Actions, plugins are referred to as "actions." Actions are reusable pieces of code that perform a specific task or set of tasks within a workflow. 
+-- These actions can be created and shared by the community or developed by your team. Here are some commonly used GitHub Actions, along with instructions on how to incorporate them into your workflows:
+
+1. actions/checkout: Checks out your repository so that your workflow can access its contents.
+- uses: actions/checkout@v3
+2. actions/setup-node: Sets up a Node.js environment for use in your workflow
+- uses: actions/setup-node@v3
+  with:
+    node-version: '14'
+
+3. actions/setup-python: Sets up a Python environment for use in your workflow.
+- uses: actions/setup-python@v3
+  with:
+    python-version: '3.8'
+
+4. actions/cache: Caches dependencies and build outputs to speed up subsequent workflow runs.
+- uses: actions/cache@v3
+  with:
+    path: |
+      ~/.cache/pip
+      ~/.cache/pypoetry
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/poetry.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-pip-
+
+5. actions/upload-artifact: Uploads artifacts from a workflow run (e.g., build outputs, logs).
+- uses: actions/upload-artifact@v3
+  with:
+    name: build-artifact
+    path: path/to/artifact
+
+6. actions/download-artifact: Downloads artifacts from a workflow run.
+- uses: actions/download-artifact@v3
+  with:
+    name: build-artifact
+
+7. docker/build-push-action: Builds and pushes Docker images.
+- uses: docker/build-push-action@v3
+  with:
+    context: .
+    push: true
+    tags: ${{ secrets.DOCKER_TAG }}
+
+8. actions/github-script: Allows you to run JavaScript code directly in your workflow.
+- uses: actions/github-script@v6
+  with:
+    script: |
+      console.log('Hello, world!');
+
+9. actions/stale: Automatically labels or closes stale issues and pull requests.
+- uses: actions/stale@v6
+  with:
+    repo-token: ${{ secrets.GITHUB_TOKEN }}
+    days-before-stale: 30
+    days-before-close: 7
+    stale-issue-label: 'stale'
+    stale-pr-label: 'stale'
+
+10. psf/black: Runs the Black code formatter for Python.
+- name: Format Python code
+  uses: psf/black@v23
+
+
+---------------------------------------------------------------------------
+Q. What are the credential types supported by Jenkins?
+-- GitHub Actions supports various credential types for secure and flexible authentication, including:
+1. GitHub Secrets: For storing sensitive information like API keys and passwords.
+2. GitHub Tokens: For interacting with GitHub APIs.
+3. Personal Access Tokens (PATs): For access with specific permissions.
+4. OAuth Tokens: For third-party application authorization to access GitHub resources on behalf of a user.
+5. Deploy Keys: For SSH access to repositories.
+6. Service Account Credentials: For accessing external services for authenticating and authorizing access to cloud services or external systems.
+7. Environment Variables: For passing configuration and runtime values.
+
+
+---------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+What is post build step?
+-> Image result for post build actions in jenkins
+
+* The difference between Build and Post-build steps is based partially on logical separation, partially on workflow configuration.
+aggregate the downstream test results, editable email notifications, archieve artifacts, deploy the artifacts, build other projects, set github commit, delte workspace etc.
+From the logical perspective, when you build/compile a project, that's a "Build" step, whereas when you Archive Artifacts, since that happens after the build, 
+that's a "Post-build" step.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* Do you know any other Continuous Integration tools? How is Jenkins better than any of those?
+There are many other CI tools, and the most prominent ones are –
+TeamCity
+Bamboo
+Perforce
+Circle CI
+Go
+ThoughtWorks
+Integrity
+Travis CI
+There are many more. We cannot say if Jenkins is better than each because each has its own unique features. 
+For example, TeamCity offers great .NET support but is complex and costly, 
+Travis CI is free just like Jenkins and has good documentation too. 
+Bamboo too offers efficient and faster builds but is not completely free and so on.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+*How do I set environmental variables in Jenkins?
+Answer: The environmental variables in Jenkins can be set from the Configure screen. In the Build section, select Inject environment variables. There we need to provide the environment variable like VARIABLE_NAME=VALUE pattern.
+
+Q. Default Environment Variables by Jenkins & How to introduce custom environment variables?
+Ans: Jenkins provides several environment variables by default like - BRANCH_NAME, BUILD_NUMBER, BUILD_TAG, WORKSPACE, etc.
+
+*Name a Jenkins environment variable you have used in a shell script or batch file.
+There are numerous environment variables that are available by default in any Jenkins build job. A few commonly used ones include:
+$BRANCH_NAME
+$BUILD_NUMBER
+$BUILD_TAG
+$BUILD_ID
+$BUILD_URL
+$WORKSPACE
+$JOB_NAME
+$JOB_URL
+$GIT_COMMIT
+$GIT_URL
+$GIT_BRANCH
+$NODE_NAME
+$EXECUTOR_NUMBER
+$JENKINS_URL
+$SVN_REVISION
+
+Note that, as new Jenkins plug-ins are configured, more environment variables become available. 
+For example, when the Jenkins Git plug-in is configured, new Jenkins Git environment variables, such as $GIT_COMMIT and $GIT_URL, become available to be 
+used in scripts.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*How to set Jenkins settings XML?
+Answer: In Jenkins, navigate to the Build section of the job, then click on Advanced. Settings File option will be visible there. 
+        The location of the settings.xml is to be specified there.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+*How can you temporarily turn off Jenkins security if the administrative users have locked themselves out of the admin console?
+1) The JENKINS_HOME folder contains a file named config.xml. When you enable the security, this file contains an XML element named useSecurity that changes to true. 
+2) If you change this setting to false, security will be disabled the next time Jenkins is restarted.
+3)   <useSecurity>false</useSecurity>
+However, we must understand that disabling security should always be both a last resort and a temporary measure. 
+Once you resolve the authentication issues, make sure that you re-enable Jenkins security and reboot the CI server.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q) How to secure Jenkins?
+Ans: We used matrix based security it will allow to give required permission for a user by checking the checkboxes.
+*One more security option we have called as LDAP (Lightweight Directory Access Protocol). So if we want to access jenkins with LDAP credentials we need to install LDAP plugin.
+manage jenkins -> confg global securty -> select LDAP Security realm -> fill server details & test LDAP setting -> save
+
+manage jenkins->setup security button->enable security checkbox->allow users->see details in NavBar
+manage jenkins->confg global security->security realm->uncheck the option Allow users to sign up (This will ensure that no new users can be created with your permission.)
+ 
+*Now, we need to configure the authentication for the accounts. 
+The 2 best options preferred are 
+a) Matrix-based security & 
+b) Project-base authorization strategy.
+c) LDAP (Lightweight Directory Access Protocol) 
+*Save the form. Logout and login again.
+*A login page will be displayed and login with the created account.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+How do I jenkins permission on a per job basis or give security permission to access jenkins?
+-> You need Project-based Matrix Authorization Strategy in Global Configuration, and on the Job Configuration, use Enable Project-based Security.
+-> If you have administrator status go to "Jenkins configuration" (picture 1) and then to "Manage and assign roles" (picture 2). 
+   Here you will see "Manage roles" and "Assign roles".
+-> Use "Manage roles" to create/update roles and assign permissions to determined projects and also to manage the restrictions of each job. Use "Manage and Assign roles" to assign roles to users or to other groups.
+
+*In company they will store inernal portal of users.
+
+Role-based Authorization Strategy:
+The Role Strategy plugin is meant to be used from Jenkins to add a new role-based mechanism to manage users' permissions. Supported features
+-Creating global roles, such as admin, job creator, anonymous, etc., allowing to set Overall, Agent, Job, Run, View and SCM permissions on a global basis.
+-Creating item roles, allowing to set item specific permissions (e.g Job, Run or Credentials) on Jobs, Pipelines and Folders.
+-Creating agent roles, allowing to set agent specific permissions.
+-Assigning these roles to users and user groups
+-Extending roles and permissions matching via Macro extensions
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q) What is the Challenging job in jenkins?
+Ans: When I have installed Jenkins in first time in my server, after some time server failed, at that time we could not able to recover jenkins.
+     So i have searched for high availability of plugin and we found gearman plugin and installed it.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q) How do I parameterized a Jenkins file?
+-> A parameterized pipeline allows us to set needed parameters dynamically at build time.
+
+-> Parameterized Trigger Plugin: This plugin lets you trigger new builds when your build has completed, with various ways of specifying parameters for the new build.
+
+-> It will prompt for : By adding below parameters to a job we can parameterized by below:
+1. Boolean parameter: As name indicates to check status like true or false & we have option to check the box for default value if we check it then prints true else false
+2. Choice parameter: This parameter is like dropdown
+3. Credentials parameter
+4. File parameter
+5. Multi-line String paramter
+6. Password parameter
+7. Run parameter
+8. String parameter
+Then after chossing parameter go to build section & select execute shell & run
+echo $SHELL
+
+Q: How do you use parameters in jenkins?
+A: jenkins UI-->new item-->select typeofproject-->general-->select ths project is parameterised. it prompt users one or more inputs that willbe passed into the buuld.
+type of project can be: free style, maven, pipeline, multi branch pipeline, folder, multi-confiration pipeline.
+in side maven--> general,SC mgmt, build trigeers, build environment, pre steps, build, post steps, post build action.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+Q) how do we configure different jobs for different worker nodes using pipeine script?
+Ans: We can give agent as none in pipeline script. Where agent none indicates there  is no global agent for entire pipeline 
+& each stage must specify its own agent.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+23. What is Artifact Archival & how to do it in Pipelines?
+Ans: Artifacts are the exportable/storable/archivable results of a specific job build. This can be configured using a plugin called - Copy artifact Plugin. Based on the configured pattern, the files/directories matching the configured patterns will be archived for a Jenkins build, which can be used for future references. In the pipeline, it can be configured as follows -
+    For e.g.
+archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/specific_file.txt'
+The above command will archive all the text files from the output folder except specific_file.txt
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. How do u safe restart jenkins?
+-> Safe restart will allow to current running jobs to complete but it will not allow new jobs to be triggered it will restart the jenkins once the current running jobs are completed.
+http://localhost:8080/safestart
+systemctl jenkin saferestart
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is the reasons to build failure in jenkins?
+Ans: 3 reasons
+1) Normally build failure occurs due to diff in the versions if we are integrating
+   maven project if the default version of maven installed in master or worker node is
+   different from the maven version in the jenkins server page then we get build failure.
+2) One more reason in case of plugins. Plugins should be installed correctly.
+3) We can get build failure if the pom file not found.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Methods of jenkins backup?
+There are multiple methods to back up the Jenkins configurations such as:
+1. using thin backup
+2. using the git repo
+3. using disk snapshots
+
+Steps:Using thin backup
+Step 1: Manage Jenkins ->manage plugins -> click on available ->select “Thin Backup”->install without start.
+Step 2: By clicking on the manage Jenkins from the Jenkins home page redirected to the next page which is having an option for Manage plugins. On the next page, we can see the available tab, now select Thin Backup plugin and click on Install without restart button.
+
+Steps:Using git repo
+Here we take backup of  /var/lib/jenkins
+We create separate git repo for jenkins & we can push jenkins configurations files to git repo. The we can clone it whenever we need it. Or we can write shell script to automate the task & the script takes the backup * stores it in the repo.
+
+Jenkins Backup Using Thin Backup Plugin:
+-Full backup
+-Differential backup
+-File exclusions from Backup
+-Backup build results
+-Cleanup of differential backups
+
+
+*Explain how you can move or copy Jenkins from one server to another?
+I will approach this task by copying the jobs directory from the old server to the new one. There are multiple ways to do that, I have mentioned it below:
+You can:
+1) Move a job from one installation of Jenkins to another by simply copying the corresponding job directory.
+2) Make a copy of an existing job by making a clone of a job directory by a different name.
+3) Rename an existing job by renaming a directory. Note that if you change a job name you will need to change any other job that tries to call the renamed job.
+
+Jenkins Backup Using Disk Snapshots
+*Attach an external disk to your Jenkins server.
+*Mount the disk to the server on a folder, say /jenkins_data
+*If you have existing data, move all data from /var/lib/jenkins to /jenkins_data folder first.
+*Symlink /var/lib/jenkins to /jenkins_data.
+*Restart Jenkins and check if Jenkins is using the newly mounted disk.
+
+--------------------------------------------------------------------------------------------------------
+Q. What is updating mechanism in jenkins?
+Ans: If we have downloaded jenkin version using yum install then we can use yum update jenkins.
+-if you still fail to get latest version we can download the .war file & upgrade it manually.
+*download jenkins.war from goolge, in command promt use wget 
+*Before we copy new war file take backup of existing version of the jenkins.
+*copy new version of jenkins.war file into /usr/lib/jenkins/ & after this we have to restart jenkins.
+-systemctl stop jenkins
+-systemctl start jenkins
+To check whether service is running or not
+-systemctl status jenkins
+
+Q. How do u configure webhook for automatic build , when developers commits?
+-> Webhooks can be used to configure automatic builds when developers commit code changes. 
+-> Here are the general steps to configure a webhook for automatic builds:
+1. Set up a webhook in your version control system: This typically involves configuring a webhook in the  
+   settings of your repository on the version control system (e.g. GitHub, Bitbucket, GitLab). 
+   The webhook should be configured to trigger a build when a commit is made to the repository.
+2. Create a build pipeline: Create a build pipeline using a tool like Jenkins, Travis CI, or CircleCI. 
+   The pipeline should be configured to build the code in the repository when triggered by the webhook.
+3. Configure the webhook to trigger the build pipeline: This typically involves providing the URL of the 
+   build pipeline to the webhook. When the webhook receives a commit event, it will send a request to the 
+   build pipeline, which will then start a new build.
+4. Test the webhook: After configuring the webhook, test it by making a commit to the repository and 
+   checking to see if the build pipeline is triggered.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+Jenkins stores some of the related builds data like the following:
+	The working directory is stored in the directory {JENKINS_HOME}/workspace/.
+	Each job store its related temporal workspace folder in the directory {JENKINS_HOME}/workspace/{JOBNAME}
+	The configuration for all jobs stored in the directory {JENKINS_HOME}/jobs/.
+	Each job store its related builds data in the directory {JENKINS_HOME}/jobs/{JOBNAME}
+	Each job folder contains:
+		The job configuration file is {JENKINS_HOME}/jobs/{JOBNAME}/config.xml
+			//if you forget jenkins password, disable security from above path. and restart jenkins.
+		The job builds are stored in {JENKINS_HOME}/jobs/{JOBNAME}/builds/
+	You can download the config file from a Jenkins node by running: curl http://<ip-address>:8080/job/<job-name>/config.xml > jenkins_config.xml
+where can we see jenkins realted logs?   /var/log/jenkins
+
+	JENKINS_HOME   /var/lib/jenkins
+	+- config.xml     (jenkins root configuration)
+ 	+- *.xml          (other site-wide configuration files)
+	+- userContent    (files in this directory will be served under your http://server/userContent/)
+ 	+- fingerprints   (stores fingerprint records)
+ 	+- nodes          (slave configurations)
+ 	+- plugins        (stores plugins)
+ 	+- secrets        (secretes needed when migrating credentials to other servers)
+ 	+- workspace (working directory for the version control system)
+     		+- [JOBNAME] (sub directory for each job)
+ 	+- jobs
+     		+- [JOBNAME]      (sub directory for each job)
+         		+- config.xml     (job configuration file)
+         		+- latest         (symbolic link to the last successful build)
+         		+- builds
+             			+- [BUILD_ID]     (for each build)
+                 			+- build.xml      (build result summary)
+                 			+- log            (log file)
+                 			+- changelog.xml  (change log)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+17. How Jenkins jobs can be Triggered/Stopped/Controlled programmatically?
+Ans: Jenkins Remote Access API can be used to do things like - 
+*Retrieving information about jobs, views, nodes, builds, etc. from Jenkins for programmatic consumption. 
+*Trigger a build (both parameterized & non-parameterized), stop/abort a build, enable/disable a Job, group/remove jobs into/from views, etc.
+*Create/copy/modify/delete jobs. 
+and many other programming language-specific functionalities. It has wrappers for main programming languages like - Python, Ruby & Java. 
+It can be triggered via CURLas below -
+-> Jobs without parameters
+Simply an HTTP POST on JENKINS_URL/job/JOBNAME/build.
+
+-> Jobs with parameters
+Simple example - sending "String Parameters":
+curl JENKINS_URL/job/JOB_NAME/buildWithParameters --user USER:TOKEN --dataid=123 --data verbosity=high
+
+Q. How to trigger Jenkins job remotely?
+Ans: We use this option when we want to trigger new builds by accessing a special predefined URL. 
+In Jenkins, as soon as we select the "Trigger builds remotely"  option, we can see the suggested URL. 
+Now our task is to build this URL and hit that URL in the browser. As part of it, we need to follow below steps:
+
+Copy URL (JENKINS_URL/job/Simple_Java_Program/build?token=TOKEN_NAME) and paste this URL somewhere in notepad.
+Put Jenkins URL like in case of mine it is http://localhost:8080/ in place of JENKINS_URL.
+Put the token name in place of TOKEN_NAME like I put 1234 in this case. We need to put the same token name in the Authentication token text box.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+18. How to get the Jenkins version programmatically in Jobs/Pipelines or nodes other than master?
+Ans: To check the version of Jenkins, load the top-level page or any top-level Remote Access API path like the '.../api/*' page and then check 
+     for the 'X-Jenkins' response header. 
+     This contains the version number of Jenkins, like "1.404". This is also a good way to check if an URL is a Jenkins URL.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is the Jenkins User Content service?
+Ans: Jenkins has a mechanism known as "User Content", where administrators can place files inside the $JENKINS_HOME/userContent folder and these 
+     files are served from yourhost/jenkins/userContent.
+-This can be thought of as a mini HTTP server to serve images, stylesheets, and other static resources that you can use from various description 
+ fields inside Jenkins.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. How can we share information between different build steps or stages in a Jenkins Job?
+Ans: Every build step or stage will be running in its process and hence sharing information between two different build steps is not so direct. We can use either a File, a Database Entry, an Environment Variable, etc. to share info from one build step to another or a post-build action.
+
+Q. How code coverage is measured/tracked using Jenkins in a CI environment?
+Ans: Using language-specific code coverage plugins like JaCoCo, CodeCov, etc or generic tools/plugins like Sonarqube which will add the code coverage data to builds with some minor tweaks in the code and the same can be displayed as a graph in Jenkins.
+
+Q. How can a job configuration be reset to an earlier version/state?
+Ans: From the Job details page, we can use Job Config History to - See diff, Review & Revert the Job configs from the history of changes we have 
+     made to a particular job.
+This will be super useful when a job is misconfigured by someone by mistake, it can be reviewed and reverted easily to any of its earlier states.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. How to install a Custom Jenkins Plugin or a Version of Plugin Not available in Jenkins Update Center?
+Generally, it is the best practice to use the latest version of a plugin. But there are ways to install custom plugins or outdated 
+versions of a published plugin. Jenkins Plugins are exported using a .hpi file and the same can be installed in multiple ways -
+
+Using the Jenkins CLI
+java -jar jenkins-cli.jar -s http://localhost:8080/ install-plugin SOURCE ... [-deploy] [-name VAL] [-restart]
+
+The above command Installs a plugin either from a file, an URL or from the update center.
+
+SOURCE: If this points to a local file, that file will be installed. If this is an URL, Jenkins downloads the URL and installs that
+as a plugin. Otherwise, the name is assumed to be the short name of the plugin in the existing update center (like "findbugs") and 
+the plugin will be installed from the update center.
+-deploy: Deploy plugins right away without postponing them until the reboot.
+-name VAL: If specified, the plugin will be installed as this short name (whereas normally the name is inferred from the source name 
+automatically).
+-restart: Restart Jenkins upon successful installation.
+Advanced Installation - via - Web UI
+
+Assuming a .hpi file has been downloaded, a logged-in Jenkins administrator may upload the file from within the web UI:
+
+Navigate to the Manage Jenkins > Manage Plugins page in the web UI.
+Click on the Advanced tab.
+Choose the .hpi file under the Upload Plugin section.
+Upload the plugin file.
+Restart the Jenkins instance
+Advanced Installation - via - On the master
+
+Assuming a .hpi file has been explicitly downloaded by a systems administrator, the administrator can manually place the .hpi file in 
+a specific location on the file system.
+
+Copy the downloaded .hpi file into the JENKINS_HOME/plugins directory on the Jenkins controller (for example, on Debian systems 
+JENKINS_HOME is generally /var/lib/jenkins).
+
+The master will need to be restarted before the plugin is loaded and made available in the Jenkins environment.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+32. How to download the Console log for a particular Jenkins build programmatically?
+Using the Jenkins CLI - console - command
+
+java -jar jenkins-cli.jar console JOB [BUILD] [-f] [-n N]
+
+Produces the console output of a specific build to stdout, as if you are doing 'cat build.log'
+
+JOB: Name of the job
+BUILD: Build number or permalink to point to the build. Defaults to the last build
+-f: If the build is in progress, append console output as it comes, like tail -f
+-n N: Display the last N lines.
+E.g.
+
+ssh -l <ssh_username> -p <port_no> <Jenkins_URL> console <JOB_NAME>
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+33. What is Jenkins Remote Access API?
+Jenkins provides remote access API to most of its functionalities (though some functionalities are programming language-dependent).
+Currently, it comes in three flavors -
+
+XML
+JSON with JSONP support
+Python
+*Remote access API is offered in a REST-like style. That is, there is no single entry point for all features, and instead, they are 
+available under the ".../api/" URL where the "..." portion is the data that it acts on.
+
+*For example, if your Jenkins installation sits at interviewbit.com, visiting /api/ will show just the top-level API features 
+available – primarily a listing of the configured jobs for this Jenkins instance.
+
+*Or if we want to access information about a particular build, 
+e.g. https://ci.jenkins.io/job/Infra/job/jenkins.io/job/master/lastSuccessfulBuild/, 
+then go to https://ci.jenkins.io/job/Infra/job/jenkins.io/job/master/lastSuccessfulBuild/api/ and you’ll see the list of 
+functionalities for that build.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is In-process Script Approval and how it works?
+-> Jenkins, and several plugins, allow users to execute Groovy scripts in Jenkins. To protect Jenkins from the execution of malicious 
+   scripts, these plugins execute user-provided scripts in a Groovy Sandbox that limits what internal APIs are accessible.
+-> This protection is provided by the Script Security plugin. As soon as an unsafe method is used in any of the scripts, the 
+   "In-process Script Approval" action should appear in "Manage Jenkins" to allow Administrators to make a decision about which unsafe 
+    methods, if any, should be allowed in the Jenkins environment.
+-> This in-process script approval inherently improves the security of the overall Jenkins ecosystem.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. Can we monitor Jenkins using common Observability tools?
+Ans: Common monitoring platforms like DataDog, Prometheus, JavaMelody & few others - have their corresponding Jenkins plugin, which 
+     when configured, sends Metrics to the corresponding Monitoring platform, which can then be Observed with the latest tools & 
+     technologies. The same can be configured with Alarms & Notifications for immediate attention when something goes wrong.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Q. What is a Ping Thread in Jenkins and how it works?
+Ans: Jenkins installs "ping thread" on every remote connection, such as Controller/Agent connections, regardless of its transport 
+     mechanism (such as SSH, JNLP, etc.). The lower level of the Jenkins Remoting Protocol is a message-oriented protocol, and a ping 
+     thread periodically sends a ping message that the receiving end will reply to. The ping thread measures the time it takes for the 
+     reply to arrive, and if it’s taking excessive time (currently 4 minutes and configurable), then it assumes that the connection was 
+     lost and initiates the formal close down.
+
+*This is to avoid an infinite hang, as some of the failure modes in the network cannot be detected otherwise. The timeout is also set 
+ to a long enough value so that a temporary surge in the load or a long garbage collection pause will not trip off the close-down.
+
+*Ping thread is installed on both controller & agent; each side pings the other and tries to detect the problem from their sides.
+
+*The ping thread time out is reported through java.util.logging. Besides, the controller will also report this exception in the agent 
+ launch log. Note that some agent launchers, most notably SSH agents, writes all stdout/stderr outputs from the agent JVM into this
+ same log file, so you need to be careful.
+
+--------------------------------------------------------------------------------------------------------------------------------
+Java installation for slaves
+Step1: sudo apt update
+Step2: sudo apt install default-jre
+Step3: java -version
+
+Jenkins Agent/Slave Prerequisites
+For Jenkins agent configuration, you need to have the following in the slave machines before adding it to the master.
+
+*Java should be installed on your agent server.
+*A valid Linux user account that can perform the required tasks on the agent server. (preferably a sudo user if your job requires elevated privileges)
+*Git should be installed as most build job requires git specific actions.
+Lets get started with the Jenkins agent node configuration. (Pre-installed)
+
+Create a Jenkins User
+Step 1: Create a jenkins user and a password using the following command.
+sudo adduser jenkins --shell /bin/bash
+
+Step 2: Now, login as jenkins user.
+su jenkins
+
+Step 3: Create a “jenkins_slave” directory under /home/jenkins
+mkdir /home/jenkins/jenkins_slave
+
+
+Setting up Jenkins slaves using ssh keys
+Step 1: Login to the slave server as a jenkins user.
+
+Step 2: Create a .ssh directory and cd into the directory.
+mkdir ~/.ssh && cd ~/.ssh
+
+Step 3: Create an ssh key pair using the following command. Press enter for all the defaults when prompted.
+ssh-keygen -t rsa -C "The access key for Jenkins slaves"
+
+Step 4: Add the public to authorized_keys file using the following command.
+cat id_rsa.pub > ~/.ssh/authorized_keys
+
+Step 5: Now, copy the contents of the private key to the clipboard.
+cat id_rsa
+
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Q. how to write pipeline even if one stage fails it should go to next stage ?
+-> In Jenkins, you can configure a pipeline to continue to the next stage even if one stage fails by using the "try-catch" block 
+   and the "catchError" step. The "try-catch" block allows you to specify a block of code that should be executed, 
+   and a block of code that should be executed if an exception is thrown. The "catchError" step can be used inside 
+   the "catch" block to handle the exception and continue the pipeline.
+-> Here is an example of a pipeline that continues to the next stage even if one stage fails:
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                try {
+                    sh './build.sh'
+                } catch (err) {
+                    catchError {
+                        echo "Build failed, but we're continuing to the next stage anyway."
+                    }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                sh './test.sh'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh './deploy.sh'
+            }
+        }
+    }
+}
+-> In this example, the pipeline starts with the "Build" stage, which runs the "./build.sh" script. 
+   If this script fails and throws an exception, the pipeline will enter the "catch" block and execute the "catchError" step, 
+   which simply echoes a message to the console. After that, the pipeline continues to the next stage, "Test" and "Deploy".
+-> It's worth noting that in this example, even if the build step fails, it will be executed, but the pipeline will not stop 
+   and will continue to the next stages, which are test and deploy.
+-> You can also configure the pipeline to stop execution, in case of failure, by setting the "failFast" parameter to "true" 
+   in catchError() step. This can be useful if you want to stop the pipeline execution in case of critical failure.
+
+catchError(failFast: true) {
+        echo "Build failed, pipeline is stopping."
+}
+-> This way, the pipeline will stop execution, and the next stages will not be executed, in case of failure.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Q. Set a pipeline, so that I should get a email notification, when build completes, when artifacts ares stored, when deployment is completed?
+-> Using CI/CD tool Jenkins or GitLab CI
+   Here are the general steps to set up a pipeline with email notifications:
+1. Set up a CI/CD pipeline: Create a pipeline using Jenkins or GitLab CI that includes build, test, and 
+   deploy stages. Configure the pipeline to run automatically when code is committed to the repository.
+2. Set up email notifications: Configure Jenkins or GitLab CI to send email notifications when specific 
+   events occur in the pipeline. For example, you can set up email notifications to be sent when a build 
+   completes, when artifacts are stored, and when deployment is completed.
+3. Configure email settings: Provide the necessary information for the CI/CD tool to send email notifications, 
+   such as the email server, port, and credentials.
+4. Test the pipeline: Test the pipeline by committing code changes to the repository and checking to see 
+   if the pipeline runs correctly and sends email notifications when the specified events occur.
+
+pipeline {
+    agent any
+    environment {
+         NEW_VERSION = '1.3.0'
+    stages {
+        stage('Build') {
+            steps {
+                // Build steps here
+            }
+        }
+        stage('Test') {
+            steps {
+                // Test steps here
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Deployment steps here
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                // Send email notification when build completes
+                emailext body: 'Build has completed',
+                subject: 'Build Notification',
+                to: 'user@example.com',
+                attachLog: true
+            }
+        }
+        success {
+            script {
+                // Send email notification when artifacts are stored
+                emailext body: 'Artifacts have been stored',
+                subject: 'Artifacts Notification',
+                to: 'user@example.com',
+                attachLog: true
+            }
+        }
+        failure {
+            script {
+                // Send email notification when deployment is completed
+                emailext body: 'Deployment has failed',
+                subject: 'Deployment Notification',
+                to: 'user@example.com
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+Q. Pipeline is running and tasks are not completed, how u fix it
+-> We have a Release pipeline to manage our releases. The pipeline has stages that run an agentless job, and the job performs 
+   different tasks. I noticed that even though the tasks complete successfully, the job continues running until it eventually times out
+   
+------------------------------------------------------------------------------------------------------------------------------------------------
+Q. example of declarative pipeline with all stages involved for an web appliction?
+
+pipeline {
+    agent any
+    environment {
+            NEW_Version == '1.3.0'
+            Jenkins_credentials == credentials('name_given')
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            environment {				(Define env variable and use it in pipeline by providing $ behind it)
+                NODE_VERSION = '14'
+            }
+            steps {
+                sh 'nvm install $NODE_VERSION'
+                sh 'npm install'
+                sh 'npm run build'
+            }
+        }
+        stage('Test') {
+	    when {                                 (environment var  is branch name{available for jenkins} it only executes if current branch is dev)
+                 expression {
+                     BRANCH_NAME == 'dev' || BRANCH_NAME == 'master'          (or)
+                     BRANCH_NAME == 'dev' && CODE_CHANGES == true 
+                  }
+            }
+            steps {
+                sh 'npm run test'
+            }
+        }
+        stage('Deploy to Staging') {
+            environment {
+                STAGING_SERVER = 'example.com'
+                STAGING_DIR = '/var/www/staging'
+            }
+            steps {
+                sh "rsync -avz --delete ./ $STAGING_SERVER:$STAGING_DIR"
+            }
+        }
+        stage('Deploy to Production') {
+            environment {
+                PRODUCTION_SERVER = 'example.com'
+                PRODUCTION_DIR = '/var/www/html'
+            }
+            steps {
+                sh "rsync -avz --delete ./ $PRODUCTION_SERVER:$PRODUCTION_DIR"
+            }
+        }
+    }
+}
+   
+->  This pipeline has five stages:
+2. Checkout: This stage checks out the source code from the version control system. Build: This stage installs dependencies, builds the application, and packages it for deployment.
+3. Test: This stage runs tests on the application to ensure that it is working as expected.
+4. Deploy to Staging: This stage deploys the built application to a staging server for further testing and review.
+5. Deploy to Production: This stage deploys the application to the production server once it has been tested and reviewed on the staging server.
+-> Note that this pipeline has been defined using the declarative syntax, which makes it easy to read and 
+   understand the different stages involved in building and deploying a web application. 
+
+
+1. Tools attribute:
+-> Build like maven or gradle build and jdk: Use tools attribite to use them 
+   pipeline {
+    agent any
+    tools {
+        maven  'Maven'
+
+2. Parameters:
+->  pipeline {
+    agent any
+    parameters {
+        string(name: 'VERSION', defaultValue: '', description: 'version to deploy on prod')
+         choice(name: 'version', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
+   }
+         booleanParam(name: 'executeTEsts', defaultvalue: true, description: '')
+}
+     stage('Test') {
+	    when {                                 
+                 expression {
+                    params.executeTests == true (it will execute, if we give false it will skips)
+
+
+
+3. If you have multiple scripts to be used inside your pipeline
+-> Ex: groovy, where we have defined a small script
+-> How to pull it in pipeline
+   
+ pipeline {
+    agent any
+    environment {
+            NEW_Version == '1.3.0'
+            Jenkins_credentials == credentials('name_given')
+    stages {
+        stage('init') {
+            steps {
+                script {
+                    gv = load "script.groovy"
+                   }
+          
+
+script.groovy:
+   def funvtion() {
+      echo 'buidling the application...'
+   }
+ return this
+
+
+        
+         

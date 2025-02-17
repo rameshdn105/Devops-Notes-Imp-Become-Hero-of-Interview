@@ -19,10 +19,8 @@ Q. Systemctl: Systemctl is a SYSTEMd tool, which is mainly responsible for contr
 
 Q. what is service account in windows
 -> Type of user account that is used to run a specific service or application on a Windows computer. 
--> Designed to have limited permissions and are typically used to run services and applications that require specific 
-   access to resources, such as system resources, network resources, or other applications. 
--> These are created and managed by system administrators, and they are usually assigned to run as a specific 
-   user or system account, depending on the requirements of the service or application being run. 
+-> Designed to have limited permissions and are typically used to run services and applications that require specific access to resources, such as system resources, network resources, or other applications. 
+-> These are created and managed by system administrators, and they are usually assigned to run as a specific user or system account, depending on the requirements of the service or application being run. 
 -> Unlike a user account, a service account cannot be used to log into a computer or access resources interactively.
 
 Q. what is stream editor? three standard streams in Linux.?
@@ -55,20 +53,36 @@ Q. How to set a proxy?
 -> These proxy server settings are used by the almost all Linux command-line utilities, 
    e.g. ftp, wget, curl, ssh, apt-get, yum and others.
 
+Q. Reverse proxy?
+-> An example of a reverse proxy in action would be a company that has a website hosted on multiple web servers behind the firewall. 
+   The company wants to make sure that the website is highly available and can handle a large number of users. 
+   They also want to ensure that the website is secure and that all data transmitted between the user and the website is encrypted.
+
+-> In this scenario, the company would set up a reverse proxy server outside of the firewall. This server would be configured 
+   to handle all incoming traffic to the website. When a user connects to the website, their request is sent to the reverse 
+   proxy server, which then forwards the request to one of the web servers behind the firewall. The web server processes 
+   the request and sends the response back to the reverse proxy server, which then forwards the response to the user.
+
+-> The reverse proxy server can also handle tasks such as load balancing, caching, and SSL/TLS encryption. 
+   This means that the web servers behind the firewall do not have to worry about handling these tasks and can 
+   focus on processing requests and generating responses. It also improves the security of the website because sensitive 
+   information is not exposed to the internet directly.
+
 Q. VPN (Virtual Private Network) 
 -> VPN creates an encrypted tunnel between the server and your PC/user. 
 -> but according to the provider, this can save some registries about your activity. A good VPN provider tries to avoid saving your activity. 
 -> To use a VPN you must have a VPN client while to use a proxy you only need to do some configurations. Also, you can use a VPN to 
-   access to restricted geographic content from services like Netflix, Youtube, and others.
+   access to restricted geographic content from services like Netflix, You tube, and others.
   
 Q. What is load average in Linux?
--> Load average in Linux represents the average number of processes in the run queue over different time periods: 1-minute, 5-minute, and 15-minute intervals. It indicates system activity and resource utilization, helping identify potential bottlenecks and capacity planning.
+-> Load average in Linux represents the average number of processes in the run queue over different time periods: 1-minute, 5-minute, and 15-minute intervals. 
+-> It indicates system activity and resource utilization, helping identify potential bottlenecks and capacity planning.
 
 --------------------------------------------------------------------------
-* make file: it is a programm building file which runs in linux (For C, C++). .exe artifact will be produced.
+* make file: it is a program building file which runs in Linux (For C, C++). .exe artifact will be produced.
   For Java, maven is compiler and .jar and .war file will be created.
-* nohup (No Hang Up: how to run a process in background: nohup bash filename.sh & //// & at the end of command///bg///d is edit///tmux///
-* Ping: to check the process up and running. 
+
+* Ping: to check the server is up and running. 
 * Uptime: for how long the process was running.
 * Swap memory: if close suddenly, if u open it will be saved in swap memory (whether save or recover)
   Swap space in Linux is used when the amount of physical memory (RAM) is full. If the system needs more memory resources and the RAM is full, 
@@ -82,21 +96,47 @@ Q. What is load average in Linux?
    So, a zombie process will not be using any resources at all, other than an entry in the process table. 
    The problem may start only when a large number of zombie processes exist and system run out of PIDs
   
--> Killing the parent process
+-> Killing the parent process (  $$ kill -9)
    If the zombie processes are not able to get removed, you should kill the parent process or restart the service 
-   to get rid of the zombies. When a parent gets killed, all child processes will become the child process of ‘init process (PID 1)’.
+   to get rid of the zombies.
+ -- When a parent gets killed, all child processes will become the child process of ‘init process (PID 1)’.
    Init process will wait for the children to die by sending a wait signal which in turn removes the zombie processes. 
    The parent process can be killed using the ‘kill’ command:
-   $$ kill -9
+ 
 
 * Daemon process: A daemon is also called background processes. It is a UNIX or Linux program that executes 
   inside the background. Almost every daemon contains names that finish with "d" the letter. 
   For example, sshd, this manages connections of SSH remote access, or the httpd daemon that manages the Apache server. 
   Often, Linux begins daemons at starting time.
+Starting daemon manually:
+$$ nohup your-daemon-command &  # Starts the daemon and runs it in the background
 
-
-## Important commands used in Linux:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Command Prompt (cmd), Batch Files (.bat or .cmd) and Powershell
+1. Using & to Separate Commands: You can use the & operator to execute multiple commands sequentially. Each command will be executed regardless of whether the previous command succeeds or fails.
+## command1 & command2 & command3
+
+2. Using && for Conditional Execution: The && operator runs the next command only if the previous command was successful (exit code 0).
+## command1 && command2
+
+3. Using || for Conditional Execution: The || operator runs the next command only if the previous command failed (exit code not 0).
+## command1 || command2
+
+
+Powershell:
+1. Using ; to Separate Commands: In PowerShell, you can use the semicolon ; to separate multiple commands. All commands will be executed in sequence.
+## command1; command2; command3
+
+2. Using if Statements for Complex Logic: For more complex scenarios, you can use if statements to conditionally execute commands.
+if (Test-Path "file.txt") {
+    Write-Output "File exists"
+} else {
+    Write-Output "File does not exist"
+}
+
+
+====================================================================
 *Vi modes: Command mode, insert mode and extended mode
 -- command mode: is used for navigation and manipulation commands. (dd, x, yy, p ....)
 -- Insert mode: is for typing and editing content.
@@ -111,7 +151,7 @@ Q. What is load average in Linux?
 
 locate sample.txt   Locate a file stored in linux
 diff abc.conf xyz.conf      to find the difference in two configuration files
-zcat sample.z   .z extension means that the file has been compressed, To look at                the contents of the compressed file,
+zcat sample.z   .z extension means that the file has been compressed, To look at the contents of the compressed file,
 
 lsof-list open files
 mount -l: mounted devices on linux
@@ -127,7 +167,7 @@ ls -lrt - reverse ls -lt
 ls -a - Listing hidden files 
 ls -al - Listing hidden files in long format
 ls -i - lists files with inode number
-ls-s - lists file with their size
+ls -s - lists file with their size
 ls -S - lists files with their size and sorts the list by file size
 pwd - present working directory
 cd - change directory
@@ -137,9 +177,11 @@ cd dir1/dir2 - used to go 2 dir forward
 cp f1 f2 - copy file f1 to f2 (Destination file)
 mv f1 f2  - move file f1 to f2 
 rm filename   : removes file 
+
 vi filename - Used to edit the file or add content to a file  (Command mode, insert mode and extended mode)
 esc :wq! - used to save and quit the file
 esc :q! - used to quit the file without saving.
+
 cat filename - used to display the content of the file on the console
 esc :set number - used to set the number to a file content
 esc :set nonu - used to remove the line numbers
@@ -151,7 +193,7 @@ Nohup: No hang up : Keep processes running even after exiting the shell/terminal
 esc :% s/str1/str2/g
 s - substitute
 g - globally - used to replace a string everywhere in the file
-1. esc : 1 s/str1/str2/g - used to replace str1 to str2 everywhere in the line.
+1. esc : 1 s/str1/str2/g - used to replace str1 to str2 everywhere/globally in the line.
 2. esc : 1,3 s/str1/str2/g - used to change string from 1st to 3rd line
 3. esc : 1 s/str1/str2/1 - used to change str1 to str2 from 1st line & 1st occurence only
 4. esc :/string - It will move to 1st occurence and you keep pressing  "n" to 2nd occurence and so on..
@@ -163,7 +205,7 @@ syn : cp sourcefile destinationfile
 -> mv (move/Rename) : It is used to rename a file and also here source file will get deleted and move the content to the destination file.
 syn : mv sourcefile destinationfile
 
-mv f1 d1  -can be file to another directory but new directory shoud be in current working dir.
+mv f1 d1  -can be file to another directory but new directory should be in current working dir.
 
 ** shells: There are 3 types of shell
 1. bashrc
@@ -186,12 +228,12 @@ If you want to print only no. of characters in a file
 syn : wc -c filename
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Ridirect (>) command : It is used to write the o/p of one command to a destination file.
-If destinationfile exists It will override the content, if destinationfile doesn't exists it will ceate new file and redirect the o/p
+Redirect (>) command : It is used to write the o/p of one command to a destination file.
+If destinationfile exists It will override the content, if destinationfile doesn't exists it will create new file and redirect the o/p
 for eg : echo "stmt" > destinationfile
 
 Append (>>) : It is used to write the o/p of one command to a destination file.
-If destinationfile exists It will not override the content, instend it will just append the o/p to the end of a file.
+If destinationfile exists It will not override the content, instead it will just append the o/p to the end of a file.
 for eg : echo "stmt" >> detinationfile
 
 Types used to append:
@@ -260,7 +302,7 @@ For eg : chmod 777 filename
 rm command - used to delete files and directories
 For files - rm filename 
 for directory - rm -rf directory
-r - recursive f - forcefully
+r - recursive f- forcefully
 
 To transfer a file from 1 server to another server (local to remote, remote to local, remote-remote)
 1 scp : (Disad:whole file sends) (SCP:  Secure Copy)
@@ -270,19 +312,23 @@ syn : rsync -ap filename username@server2ip:path
 
 * Diff between scp and rsync
 -> While copying the files from 1 server to another server, if copying is stopped due to some network issue , once system
-   is back online, the scp command will start copying from the begining whereas in case of rsync it will start copying from where it is stopped.
+   is back online, the scp command will start copying from the beginning whereas in case of rsync it will start copying from where it is stopped.
 -> scp simply overwrites the files in the destination, if they already exist. Whereas, rsync, skips the files which are already available in the destination.
 
--> ping : It is used to check whether the server is up and running.
-syn : ping <ipaddress>
-	// it displays pockets transmitted and pockets recieved. if no pockets recieved, u can use traceroute command to check.
--> traceroute: prints the route that a packet takes to reach the host. This command is useful when you want to know about the route and 
-	about all the hops that a packet takes. 
-	Below image depicts how traceroute command is used to reach the Google(172.217.26.206) host from the local machine and 
-	it also prints detail about all the hops that it visits in between.
+--------------------------------------------------------------------------------------------------------
 
-Traceroute: Prints the route that a packet takes to reach the host. 
-It is useful when you want to know about the route & about all the ops that a packet takes.
+** ping (Packet Internet Groper): 
+-> It is used to check whether the server is up and running.
+-> Ping use ICMP (Internet Control Message Protocol) to communicate to other devices. You can ping host name of ip address using below command.
+syn : ping <ipaddress>
+	// it displays pockets transmitted and pockets received. if no pockets received, u can use traceroute command to check.
+
+** traceroute: 
+-> prints the route that a packet takes to reach the host. This command is useful when you want to know about the route and about all the hops that a packet takes. 
+-> Below image depicts how traceroute command is used to reach the Google(172.217.26.206) host from the local machine and it also prints detail about all the hops that it visits in between.
+
+** Traceroute: Prints the route that a packet takes to reach the host. 
+It is useful when you want to know about the route & about all the hops that a packet takes.
 
 Finger: Finger command is a user information lookup command which gives details of all the users logged in. This tool is generally used by system administrators. It provides details like login name, user name, idle time, login time, and in some cases their email address even.
 
@@ -295,11 +341,10 @@ syn : uptime
 top : It is used to check which process is taking high cpu usage.
 syn : top
 
--- top: pre-installed, shows processes that consume most system support, no scrolling support, doesnt show process tree, no mouse support, plain text and highlight in bold text to higlight info, older version(1984).
--- htop: manual-installation needed, shows every ongoing processes, allows horrizontal amd vertical scrolling support, F5 will show ongoing process in tree format, has mouse support, has a beautiful colored interface, newer version (2004).
+-- top: pre-installed, shows processes that consume most system support, no scrolling support, doesn't show process tree, no mouse support, plain text and highlight in bold text to highlight info, older version(1984).
+-- htop: manual-installation needed, shows every ongoing processes, allows horizontal and vertical scrolling support, F5 will show ongoing process in tree format, has mouse support, has a beautiful colored interface, newer version (2004).
  
--- More, less and most: All of them have similar features such as viewing multiple files simultaneously, but each one has a prominent 
-feature or advantage that might make us consider using it.
+-- More, less and most: viewing multiple files simultaneously, but each one has a prominent feature or advantage that might make us consider using it.
 
 -- More: more is one of the oldest terminal pagers in the UNIX ecosystem. Originally, more could only scroll down, but now we can use it to scroll up one screen-full at a time, and scroll down either one line or one screen-full:, no live monitoring,
 space – go to the next page in accordance with the terminal’s size
@@ -308,11 +353,13 @@ enter – scroll down one line
 = – display the current line number
 :v – start up the vi text editor at the current line
 
--- Less: One of the reasons why less was introduced was to allow backward movement line by line. It has a lot of commands that are similar to the vi text editor’s commands, and it supports horizontal scrolling, live monitoring, and more.
+-- Less: One of the reasons why less was introduced was to allow backward movement line by line. 
+-  It has a lot of commands that are similar to the vi text editor’s commands, and it supports horizontal scrolling, live monitoring, and more.
 *less supports other file formats such as jar, war, zip, pdf, tar.gz, gif, png, tiff, tif, and rar.
 
--- most: most allows us to view multiple files simultaneously and switch between them. It’s very useful for viewing large data sets because most does not wrap lines that have more characters than the terminal page. Instead, it truncates them and offers column-by-column horizontal scrolling.
-      
+-- most: most allows us to view multiple files simultaneously and switch between them. It’s very useful for viewing large data sets because most does not wrap lines that have more characters than the terminal page. Instead, it truncates them and offers column-by-column horizontal scrolling.   
+
+======================================================================================
 
 tree : It is used to show the tree structure of files and directories.
 syn : tree
@@ -321,23 +368,34 @@ syn : tree
 free: to check free memory   - -k
 
 wget and curl : These both commands are used to download the data to a server via some supported protocols such as FTP, HTTP, SCP etc
- 
+
+1. wget: Primarily designed for downloading files from the web. It supports HTTP, HTTPS, and FTP protocols, and is most commonly used for downloading files and recursively retrieving content (e.g., websites).
+
+2. curl: A more versatile tool that can both download and upload data. It supports a broader range of protocols, including HTTP, HTTPS, FTP, SCP, SFTP, LDAP, and many others. It is commonly used for testing APIs and interacting with web services.
+-> Download: $$ curl -O http://example.com/file.zip
+-> Upload File: curl -X POST -F "file=@path/to/file" http://example.com/upload
+   Upload data: curl -X PUT -d "@file.txt" http://example.com/upload
+
+======================================================================================
+
 To login as root
 1. sudo
 2. sudo bash
 3. su - : if we have password
 4. su root
 
+
 Grep(Global Regular Expression Print) command : used to search pattern/string in a file.
 syn : grep "pattern" filename - case sensitive
       grep -i "pattern" filename - case insensitive
-There are many options used with grep command 
+
+-> There are many options used with grep command 
 syn : grep [options] pattern filename
 for eg : 
-1. grep -l "pattern" * - Used to display filenames in which pattern is present.
+1. grep -l "pattern" * - Used to "display filenames" in which pattern is present.
 2. grep -h "pattern" * - Used to display the matched lines, but do not display the filenames.      
 3. grep -n "pattern" * - Used to display the matched lines and their line numbers.
-4. grep -c "pattern" * - Used to count the number of lines that matches a pattern.
+4. grep -c "pattern" * - Used to "count the number of lines" that matches a pattern.
 5. grep -v "pattern" * - Used to print all the lines except pattern.
 6. grep "s$" * - used to print all the lines that ends with given pattern letter.
 7. grep "^I" * - used to print all the lines that starts with given pattern letter.
@@ -401,9 +459,24 @@ Supported for		Works for both files and directories	Only supported for files, no
 
 Assignment : Explore Bashrc and Bash-profile
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Cut: Cut out sections of a specified file or piped data and print the result of std output.
-cut -b -1 filename
-cut -c [list] ]file]
+-> useful tool for extracting sections from lines of input, often used with text files or data streams. It allows you to cut out specific fields or characters from the data.
+$$ cut -b -1 filename
+$$ cut -c [list] ]file]
+
+cut -b 1-5 filename.txt : Extract the first 5 bytes from each line
+cut -c 1-5 filename.txt : Extract the first 5 characters from each line
+
+Option	Description	Example Command
+-b	Select by byte positions			cut -b 1-5 filename.txt
+-c	Select by character positions			cut -c 1-10 filename.txt
+-f	Select by field (with delimiter)		cut -f 2,4 -d ',' filename.csv
+-d	Specify the delimiter (default is tab)		cut -d ':' -f 1 filename.txt
+-s	Suppress lines without delimiter		cut -d ',' -f 1 -s filename.csv
+-n	Ensure correct cutting of multi-byte characters	cut -c 1-10 -n filename.txt
+
 
 Awk command : Used to cut the content of file column wise.
 For eg :
@@ -417,16 +490,17 @@ To print 1st column and row:
 Syn: head -1 tx1 && awk -F " " '{print $1}' tx1
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Passwordless connection between 2 servers
+Password-less connection between 2 servers
 Step 1 - create 2 servers 
 step 2 - Run ssh-keygen -t rsa on server1
 step 3 - copy generated pub key from server 1 and paste it into server2's authorized_keys file 
 step 4 - change permission for authorized_keys file in server2 to 700
 step 5 - Run ssh username@server2_publicip to make passwordless connection between 2 servers.
 
-SSH port 22: The port is used for Secure Shell (SSH) communication and allows remote administration access to the VM. In general, traffic is encrypted using password authentication.
-SSH usually runs over TCP
-SSH protocol's default settings are to listen on TCP port 22 for connections
+SSH port 22: The port is used for Secure Shell (SSH) communication and allows remote administration access to the VM. 
+-> In general, traffic is encrypted using password authentication.
+-> SSH usually runs over TCP
+-> SSH protocol's default settings are to listen on TCP port 22 for connections
 
 find command : It is used to find the location of files and directories.
 syn : find . -name "filename"
@@ -446,14 +520,16 @@ For eg :
 11. find . -type f ! -empty - It is used to list non-empty files
 12. find . -type f -size +1k - It is used to find files which are more than 1KB
 
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 Netstat : It is used to list listening and non listening ports and also gives statistic info about the network.
 syn : netstat 
 for eg :
 netstat -l : It is used to list only listening ports
-netstat -at : It is used to list all listening non-listening tcp ports
 netstat -lt : It is used to list only listening tcp ports
-netstat -au : It is used to list all listening non-listening udp ports
+netstat -at : It is used to list all listening non-listening tcp ports
 netstat -lu : It is used to list only listening udp ports
+netstat -au : It is used to list all listening non-listening udp ports
 netstat -nptl : It is used to check the service ports.
 
 Q. What commands do you know that can be used to check DNS records?
@@ -516,8 +592,8 @@ sudo shutdown now : shutdown within sometime
 NS lookup: name server lookup: useful to getting info from DNS server
 tr command:translating and deleting charecters
 ENV: print environment variables
-
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 1. FTP:       20 - (the file transfer protocol) :port 20 for data transfers
    FTP :      21 - to issue commands and to control the FTP session
 2. SSh:       22 - is dedicated to SSH, or secure shell login
@@ -542,27 +618,40 @@ ENV: print environment variables
 -> (The SMTP connection is built on something called a TCP connection, which stands for Transmission Control Protocol.) From there, the SMTP client uses 
    commands to tell the server what to do and transfer data, like the sender's email address, the recipient's email address, and the email's content.
 
-8. HTTP, the hypertext transfer protocol, uses port 80 to deliver web pages
+==========================================================================================================================================================
+
+TLS/SSL
+------
+-> TLS (Transport Layer Security) and SSL (Secure Sockets Layer) are both protocols used to provide secure communication over the internet. They are cryptographic protocols that provide security for communication between clients and servers over a network.
+-> SSL was developed by Netscape in the mid-1990s and was widely used for secure communication on the internet until the mid-2000s when it was replaced by TLS. 
+-> TLS is an improved version of SSL and is now widely used for secure communication on the internet.
+-> Both SSL and TLS use a combination of public-key and symmetric-key encryption to provide confidentiality, 
+   integrity, and authenticity. When a client connects to a server using SSL/TLS, the server presents a digital 
+   certificate that contains its public key. The client uses this public key to establish a secure connection with 
+   the server and negotiate the symmetric keys used for encryption.
+-> TLS is used for a variety of purposes including secure web browsing (HTTPS), email, FTP, and other applications that 
+   require secure communication over a network. The latest version of TLS is TLS 1.3, which was released in 2018 and provides 
+   improved security and performance compared to previous versions.
+
+
+** HTTP, the hypertext transfer protocol, uses port 80 to deliver web pages
 -> HTTP stands for Hyper Text Transfer Protocol. WWW is about communication between web clients and servers. Communication between 
    client computers and web servers is done by sending HTTP Requests and receiving HTTP Responses.
--> An HTTP Proxy serves two intermediary roles as an HTTP Client and an HTTP Server for security, management, and caching 
+-> An HTTP Proxy serves two intermediary roles as an "HTTP Client" and a "HTTP Server" for security, management, and caching 
    functionality. The HTTP Proxy routes HTTP Client requests from a Web browser to the Internet, while supporting the caching of Internet data.
-9. HTTPS: Port 443 is dedicated to HTTPS, the secure version of HTTP delivered over TLS/SSL
+** HTTPS: Port 443 is dedicated to HTTPS, the secure version of HTTP delivered over TLS/SSL
 ->  HTTPS uses an encryption protocol to encrypt communications. The protocol is called Transport Layer Security (TLS), although formerly it was known as 
     Secure Sockets Layer (SSL). This protocol secures communications by using what's known as an asymmetric public key infrastructure.
 
+
 Q. how http and https works?
--> HTTP (Hypertext Transfer Protocol) and HTTPS (HTTP Secure) are protocols used to transfer data between a 
-   client (such as a web browser) and a server (such as a website). Both protocols work in a similar manner, 
-   but HTTPS is a more secure version of HTTP.
--> HTTP works by using a request-response model. When a client sends an HTTP request to a server, the server 
-   responds with an HTTP response. The request and response consist of headers and a message body. 
-   The headers contain information about the request or response, such as the content type and the length of the 
-   message body, while the message body contains the actual data being transferred.
--> HTTPS, on the other hand, uses a combination of HTTP and SSL/TLS (Secure Sockets Layer/Transport Layer Security) 
-    protocols to provide a secure connection between the client and the server. 
-	The SSL/TLS protocols use a combination of symmetric and asymmetric encryption to encrypt the data being transferred 
-	between the client and the server, making it difficult for anyone to intercept or eavesdrop on the data.
+-> HTTP (Hypertext Transfer Protocol) and HTTPS (HTTP Secure) are protocols used to transfer data between a client (such as a web browser) and a server (such as a website). Both protocols work in a similar manner, but HTTPS is a more secure version of HTTP.
+
+-> HTTP works by using a request-response model. When a client sends an HTTP request to a server, the server responds with an HTTP response. 
+-> The request and response consist of headers and a message body. The headers contain information about the request or response, such as the content type and the length of the message body, while the message body contains the actual data being transferred.
+-> HTTPS, on the other hand, uses a combination of HTTP and SSL/TLS (Secure Sockets Layer/Transport Layer Security) protocols to provide a secure connection between the client and the server. 
+-> The SSL/TLS protocols use a combination of symmetric and asymmetric encryption to encrypt the data being transferred between the client and the server, making it difficult for anyone to intercept or eavesdrop on the data.
+
 -> The following are the key steps involved in how HTTPS works:
 1. The client sends a request to the server using the HTTPS protocol. The request is encrypted using SSL/TLS.
 2. The server receives the request and generates a public key and a private key. The public key is sent back to the client as part of the SSL/TLS handshake.
@@ -574,25 +663,8 @@ Q. how http and https works?
    provides a more secure connection by using SSL/TLS protocols to encrypt the data being transferred. 
   This helps to prevent unauthorized access to the data and ensure the privacy and security of the user's data.
 
-TLS/SSL
-------
--> TLS (Transport Layer Security) and SSL (Secure Sockets Layer) are both protocols used to provide secure 
-   communication over the internet. They are cryptographic protocols that provide security for communication 
-   between clients and servers over a network.
--> SSL was developed by Netscape in the mid-1990s and was widely used for secure communication on the 
-   internet until the mid-2000s when it was replaced by TLS. 
--> TLS is an improved version of SSL and is now widely used for secure communication on the internet.
--> Both SSL and TLS use a combination of public-key and symmetric-key encryption to provide confidentiality, 
-   integrity, and authenticity. When a client connects to a server using SSL/TLS, the server presents a digital 
-   certificate that contains its public key. The client uses this public key to establish a secure connection with 
-   the server and negotiate the symmetric keys used for encryption.
--> TLS is used for a variety of purposes including secure web browsing (HTTPS), email, FTP, and other applications that 
-   require secure communication over a network. The latest version of TLS is TLS 1.3, which was released in 2018 and provides 
-   improved security and performance compared to previous versions.
--> In summary, both SSL and TLS are protocols used to provide secure communication over the internet, but TLS is 
-   the newer and more secure protocol that has replaced SSL.
 
-** Tcp ip protocol and working mechanism
+** Tcp Ip protocol and working mechanism
 -> TCP/IP (Transmission Control Protocol/Internet Protocol) is a suite of communication protocols used for transmitting data over networks, including the internet. It is the foundation of modern networking and is widely used for data transmission between computers and devices. TCP/IP is organized into four layers: Application, Transport, Internet, and Link Layer.
 
 1. Application Layer:
@@ -603,10 +675,10 @@ TLS/SSL
 -- UDP is a simpler, connectionless protocol that does not guarantee reliable delivery. It is often used for real-time applications like streaming and online gaming, where some data loss is acceptable.
 3. Internet Layer:
 -- The Internet Layer is responsible for routing packets across the network. It uses IP (Internet Protocol) to handle addressing and packet forwarding. Each device on the network is assigned a unique IP address to identify its location.
-When a packet is sent from the source device, the Internet Layer adds the source and destination IP addresses to the packet header. Routers use this information to forward the packet towards its destination.
+-- When a packet is sent from the source device, the Internet Layer adds the source and destination IP addresses to the packet header. Routers use this information to forward the packet towards its destination.
 4. Link Layer:
 -- The Link Layer is responsible for data transmission over the physical network medium, such as Ethernet or Wi-Fi. It handles data framing, addressing within the local network, and error detection.
-The Link Layer encapsulates IP packets into frames appropriate for the specific network medium and forwards them to the next hop.
+-- The Link Layer encapsulates IP packets into frames appropriate for the specific network medium and forwards them to the next hop.
 
 Working Mechanism:
 -- When data needs to be transmitted from one device to another over a TCP/IP network, the following steps occur:
@@ -668,7 +740,7 @@ Security			Linux provides higher security.								Unix is also highly secured.
 Price				Linux is free and its corporate support is available at a price.			Unix is not totally free. There are some Unix versions that are free, other than that UNIX is expensive.
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-		CLI																GUI
+		CLI									GUI
 It stands for Command Line Interface.					It stands for Graphical User Interface.
 It is difficult to use.									It is easy to use.
 It consumes less memory.								It consumes more memory.
@@ -684,21 +756,6 @@ It doesn’t use any pointing devices.					GUI uses pointing devices to select a
 It doesn’t help avoid spelling mistakes and typing errors				The spelling mistakes and typing errors can be avoided while using GUI.
 
 --------------------------------------------------------------------------------------------------------------
-Q. Reverse proxy?
--> An example of a reverse proxy in action would be a company that has a website hosted on multiple web servers behind the firewall. 
-   The company wants to make sure that the website is highly available and can handle a large number of users. 
-   They also want to ensure that the website is secure and that all data transmitted between the user and the website is encrypted.
-
--> In this scenario, the company would set up a reverse proxy server outside of the firewall. This server would be configured 
-   to handle all incoming traffic to the website. When a user connects to the website, their request is sent to the reverse 
-   proxy server, which then forwards the request to one of the web servers behind the firewall. The web server processes 
-   the request and sends the response back to the reverse proxy server, which then forwards the response to the user.
-
--> The reverse proxy server can also handle tasks such as load balancing, caching, and SSL/TLS encryption. 
-   This means that the web servers behind the firewall do not have to worry about handling these tasks and can 
-   focus on processing requests and generating responses. It also improves the security of the website because sensitive 
-   information is not exposed to the internet directly.
-   
    Linux Filesystem Hierarchy Standard (FHS)
    -----------------------------------------
 ** Linux Directories

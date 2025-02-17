@@ -11,7 +11,7 @@ Steps included in running an application
 Manually,
 1. Build the application ( maven, GCC )
 2. generating the artifacts ( .war , .jar , .zip )
-3. Stroing the artifacts ( Nexus, Gitlab, S3 bucket )
+3. Storing the artifacts ( Jfrog, Nexus, Gitlab, S3 bucket )
 4. Scan the artifacts ( SonarQube )
 5. Deploy into non-prod (dev and Qa) environments ( Ansible , chef , docker )
 6. testing ( loadtest, regression test, automation test )
@@ -29,7 +29,8 @@ JAR: JaVa archive     war: Web archive
 ---------------------------------------------------------------------------------------------------------------------------------------------
 Maven:
 Maven is such a build management tool which can do all the things like adding dependencies, managing the classpath to project,
-generating war and jar file automatically and many other things. Maven can add all the dependencies required for the project 
+generating war and jar file automatically and many other things. 
+-> Maven can add all the dependencies required for the project 
 automatically by reading pom file.
 
 How Does the Maven Architecture Work?
@@ -293,7 +294,7 @@ Q. What is the reasons to build failure in jenkins?
 Ans: 3 reasons
 1) Normally build failure occurs due to diff in the versions if we are integrating
 maven project if the default version of maven installed in master or worker node is
-different from the maven version in the jenkins server page then we get build failure.
+different from the maven version in the Jenkins server page then we get build failure.
 2) One more reason in case of plugins. Plugins should be installed correctly.
 3) We can get build failure if the pom file not found.
 
@@ -307,13 +308,99 @@ different from the maven version in the jenkins server page then we get build fa
 5. Code Coverage: The percentage of code that is exercised by automated tests. 
 -> This metric helps developers ensure that their tests adequately cover the codebase.
 
+--------------------------------------------------------------------------------------------------------------------------------------------------
+** SonarQube: 
+-> SonarQube is an open-source platform used to continuously monitor and analyze code quality. 
+-> It helps developers identify potential bugs, security vulnerabilities, code smells (bad practices), and other issues in their codebase. 
+-> SonarQube helps maintain a high standard of code quality throughout the development lifecycle by providing detailed insights into your project.
+
+-> In simpler terms, SonarQube is like a "code quality checker" that scans your code, finds problems, and provides suggestions for improvement.
 
 
+-- Key Features of SonarQube:
+1. Code Quality Analysis: Detects bugs, vulnerabilities, code smells, and duplications.
+2. Supports Multiple Languages: Works with many programming languages like Java, C, C++, .NET (C#, VB.NET), JavaScript, Python, PHP, Ruby, Go, Swift, Kotlin, Scala and more.
+3. Reports and Dashboards: Provides detailed reports on code quality with a user-friendly dashboard.
+4. Security Vulnerabilities: Detects security-related flaws in the code.
+5. Code Coverage: Displays the percentage of code covered by unit tests.
+
+-- How SonarQube Works (Simplified):
+1. SonarQube Server: Stores the results and provides a dashboard for viewing analysis reports.
+$$ docker run -d -p 9000:9000 -p 9092:9092 SonarQube
+-> Now, SonarQube will be accessible at http://localhost:9000
+
+2. SonarQube Scanner: A tool that analyzes your project.
+-> If you're using Maven, add the SonarQube plugin to your pom.xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.sonarsource.scanner.maven</groupId>
+      <artifactId>sonar-maven-plugin</artifactId>
+      <version>3.9.0.915</version>
+    </plugin>
+  </plugins>
+</build>
+
+Create a sonar-project.properties file in your project's root directory:
+sonar.projectKey=my-java-project
+sonar.projectName=My Java Project
+sonar.projectVersion=1.0
+sonar.sources=src
+sonar.java.binaries=target/classes
+
+3. Dashboard: Shows issues in your code, such as bugs, security vulnerabilities, code smells, etc.
 
 
+-> Integrate SonarQube with Jenkins (CI/CD)
+-- In Jenkins, install the SonarQube plugin.
+Use the following Jenkinsfile to run SonarQube analysis:
 
-
-
+pipeline {
+    agent any
+    environment {
+        SONARQUBE = 'sonar'  // Name of your SonarQube server in Jenkins
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    // Build the project (for example, using Maven)
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarQube analysis
+                    sh "mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=<your-token>"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()  // Clean up workspace
+        }
+        success {
+            // Notify on successful build
+            echo 'Build and SonarQube analysis succeeded!'
+        }
+        failure {
+            // Send email notification for failures
+            emailext (
+                subject: "SonarQube Quality Gate Failed",
+                body: "The SonarQube analysis failed. Please review the issues detected.",
+                to: "team@example.com"  // You can specify individual email or group here
+            )
+        }
+    }
+}
 
 
 
